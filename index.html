@@ -50,7 +50,7 @@
     letter-spacing: 1px;
     margin-bottom: 8px;
   }
-  .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+  .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
   .card p { font-size: 0.9rem; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
   .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn {
@@ -68,9 +68,6 @@
   .btn-primary:hover { background: #27ae60; }
   .btn-secondary { background: #f3f4f6; color: #374151; }
   .btn-secondary:hover { background: #e5e7eb; }
-  .btn-disabled { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
-  .coming { border-left-color: #d1d5db; }
-  .coming .num { color: #9ca3af; }
   .info-box {
     background: #f0fff4;
     border: 1px solid #bbf7d0;
@@ -102,7 +99,7 @@
     <h3>강의 안내</h3>
     <p>
       각 차시 자료를 온라인에서 미리 보고 오시면 실습이 훨씬 빠릅니다.<br>
-      HTML 슬라이드는 클릭해서 바로 볼 수 있고, PDF는 다운로드하거나 브라우저에서 열 수 있습니다.<br>
+      HTML 슬라이드는 클릭해서 바로 볼 수 있고, PPTX는 다운로드하거나 열 수 있습니다.<br>
       USB 없이도 이 페이지에서 모든 자료에 접근하실 수 있습니다.
     </p>
   </div>
@@ -112,61 +109,58 @@
 
     <div class="card">
       <div class="num">1차시</div>
-      <h3>나의 AI 비서와 인사하기</h3>
-      <p>OpenClaw 설치 · 텔레그램 연동 · 첫 대화<br>AI 발전 흐름과 에이전트 개념 이해</p>
+      <h3>OpenClaw 완전 이해</h3>
+      <p>OpenClaw란 무엇인가<br>설치와 첫 실행 · 기본 구조 파악</p>
       <div class="btn-group">
         <a class="btn btn-primary" href="slides/1차시.html">슬라이드 보기</a>
-        <a class="btn btn-secondary" href="slides/1차시.pdf">PDF</a>
       </div>
     </div>
 
-    <div class="card coming">
+    <div class="card">
       <div class="num">2차시</div>
-      <h3>전문가 지식베이스 구축</h3>
-      <p>Obsidian · Markdown · RAG 활용<br>AI가 기억하는 나만의 지식 창고 만들기</p>
+      <h3>AI 직원 설계하기</h3>
+      <p>AI 비서에서 AI 직원으로 전환<br>역할과 업무 흐름 설계</p>
       <div class="btn-group">
-        <span class="btn btn-disabled">준비 중</span>
+        <a class="btn btn-primary" href="slides/2차시.html">슬라이드 보기</a>
       </div>
     </div>
 
-    <div class="card coming">
+    <div class="card">
       <div class="num">3차시</div>
-      <h3>개인비서에서 직원으로 전환</h3>
-      <p>SOP 기반 자율 실행 · 서브에이전트 설계<br>크론잡으로 자동화 업무 만들기</p>
+      <h3>프롬프트 작성법</h3>
+      <p>효과적인 프롬프트 구조<br>명령어 설계 · 실전 패턴</p>
       <div class="btn-group">
-        <span class="btn btn-disabled">준비 중</span>
+        <a class="btn btn-primary" href="slides/3차시.html">슬라이드 보기</a>
       </div>
     </div>
 
-    <div class="card coming">
+    <div class="card">
       <div class="num">4차시</div>
-      <h3>마켓 등록 · 상품화</h3>
-      <p>알바봇 플랫폼 등록 · 브랜딩<br>에이전트 이코노미 수익 모델 설계</p>
+      <h3>GitHub 메모리 설계</h3>
+      <p>AI가 기억하는 지식베이스 구축<br>GitHub 연동 · 메모리 시스템</p>
       <div class="btn-group">
-        <span class="btn btn-disabled">준비 중</span>
+        <a class="btn btn-primary" href="slides/4차시.html">슬라이드 보기</a>
       </div>
     </div>
 
-  </div>
+    <div class="card">
+      <div class="num">5차시</div>
+      <h3>첫 명령 내리기</h3>
+      <p>실전 지시 방법 · SOP 기반 실행<br>AI 직원에게 업무 위임하기</p>
+      <div class="btn-group">
+        <a class="btn btn-primary" href="slides/5차시.html">슬라이드 보기</a>
+      </div>
+    </div>
 
-  <h2>추가 자료</h2>
-  <div class="grid">
     <div class="card">
-      <div class="num">참고 자료</div>
-      <h3>OpenClaw 마스터리 가이드</h3>
-      <p>심화 학습을 위한 공식 가이드 문서</p>
+      <div class="num">6차시</div>
+      <h3>AI 자동화 시나리오</h3>
+      <p>실전 자동화 사례 · 크론잡 설계<br>나만의 AI 조직 완성하기</p>
       <div class="btn-group">
-        <a class="btn btn-secondary" href="slides/OpenClaw_Mastery.pdf">PDF 보기</a>
+        <a class="btn btn-primary" href="slides/6차시.html">슬라이드 보기</a>
       </div>
     </div>
-    <div class="card">
-      <div class="num">참고 자료</div>
-      <h3>AI 에이전트 블루프린트</h3>
-      <p>에이전트 설계 구조와 실전 활용 방법</p>
-      <div class="btn-group">
-        <a class="btn btn-secondary" href="slides/AI_Agent_Blueprint.pdf">PDF 보기</a>
-      </div>
-    </div>
+
   </div>
 
 </main>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 자동화 시나리오 — 오딘 스튜디오 강의자료</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14;--bg2:#13161d;--bg3:#1a1e28;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8eaf0;--text2:#9499a8;--text3:#5a5f70;
+  --purple:#8b7cf8;--purple2:#6c5ce7;
+  --teal:#2dd4bf;--amber:#fbbf24;--coral:#f87171;--green:#4ade80;--blue:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.7;min-height:100vh;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,15,20,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.nav-logo{font-size:14px;font-weight:500;color:var(--purple);}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{padding:5px 11px;border-radius:6px;font-size:12px;color:var(--text2);text-decoration:none;transition:all .2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--bg3);color:var(--text);}
+.nav-badge{font-size:11px;background:rgba(139,124,248,.15);color:var(--purple);border:1px solid rgba(139,124,248,.3);border-radius:20px;padding:3px 10px;font-weight:500;}
+@media(max-width:600px){.nav-links{display:none;}}
+
+.progress-wrap{position:fixed;top:52px;left:0;right:0;height:2px;z-index:99;background:var(--border);}
+.progress-bar{height:100%;background:var(--purple);width:0%;transition:width .1s;}
+
+.hero{padding:130px 1.5rem 70px;text-align:center;max-width:780px;margin:0 auto;}
+.hero-tag{display:inline-block;font-size:11px;font-weight:500;color:var(--teal);border:1px solid rgba(45,212,191,.3);background:rgba(45,212,191,.08);border-radius:20px;padding:4px 14px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:22px;}
+.hero h1{font-size:clamp(26px,5vw,44px);font-weight:700;line-height:1.25;margin-bottom:18px;}
+.hero h1 span{color:var(--purple);}
+.hero p{font-size:15px;color:var(--text2);max-width:540px;margin:0 auto 32px;}
+.hero-cards{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+.hero-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;}
+.start-btn{display:inline-flex;align-items:center;gap:8px;background:var(--purple2);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;transition:all .2s;font-family:inherit;}
+.start-btn:hover{background:var(--purple);transform:translateY(-1px);}
+
+section{max-width:900px;margin:0 auto;padding:70px 1.5rem;border-bottom:1px solid var(--border);}
+.section-tag{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
+.section-title{font-size:clamp(20px,3vw,30px);font-weight:700;margin-bottom:10px;}
+.section-sub{font-size:14px;color:var(--text2);margin-bottom:36px;max-width:580px;}
+
+.concept-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;}
+.concept-box.hl{border-color:rgba(139,124,248,.4);background:rgba(139,124,248,.06);}
+.concept-box.danger{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05);}
+.concept-box.teal{border-color:rgba(45,212,191,.3);background:rgba(45,212,191,.05);}
+.concept-emoji{font-size:26px;margin-bottom:10px;}
+.concept-title{font-size:15px;font-weight:500;margin-bottom:7px;}
+.concept-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+.analogy{margin-top:12px;padding:10px 14px;background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;font-size:12px;color:var(--text2);}
+.analogy strong{color:var(--amber);font-weight:500;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+/* 스테퍼 */
+.stepper{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:8px;}
+.stepper-dots{display:flex;gap:7px;justify-content:center;padding:18px 0 0;}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--border2);transition:background .3s;cursor:pointer;}
+.sdot.on{background:var(--purple);}
+.stepper-body{padding:24px;}
+.s-label{font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.s-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:10px;}
+.s-body{font-size:13px;color:var(--text2);line-height:1.7;}
+.s-code{margin-top:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);line-height:1.6;}
+.s-mem{margin-top:12px;border-radius:8px;padding:11px 14px;}
+.s-mem-title{font-size:11px;font-weight:500;margin-bottom:5px;}
+.s-mem-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);line-height:1.6;}
+.s-green{background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.2);}
+.s-green .s-mem-title{color:var(--teal);}
+.s-purple{background:rgba(139,124,248,.08);border:1px solid rgba(139,124,248,.2);}
+.s-purple .s-mem-title{color:var(--purple);}
+.s-amber{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);}
+.s-amber .s-mem-title{color:var(--amber);}
+.s-coral{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);}
+.s-coral .s-mem-title{color:var(--coral);}
+.s-blue{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);}
+.s-blue .s-mem-title{color:var(--blue);}
+.stepper-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px 20px;}
+.s-btn{padding:8px 20px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:13px;cursor:pointer;transition:background .2s;font-family:inherit;}
+.s-btn:hover{background:var(--bg2);}
+.s-btn.primary{background:var(--purple2);color:#fff;border-color:var(--purple2);}
+.s-btn.primary:hover{background:var(--purple);}
+.s-counter{font-size:12px;color:var(--text3);}
+
+/* 도해 */
+.diagram-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px 20px;margin:24px 0;}
+
+/* 사례 카드 */
+.case-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;}
+.case-header{padding:16px 20px 14px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);}
+.case-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.av-orange{background:rgba(251,191,36,.15);border:1.5px solid rgba(251,191,36,.4);}
+.av-blue{background:rgba(96,165,250,.15);border:1.5px solid rgba(96,165,250,.4);}
+.av-green{background:rgba(74,222,128,.15);border:1.5px solid rgba(74,222,128,.4);}
+.case-name{font-size:14px;font-weight:500;color:var(--text);}
+.case-role{font-size:11px;color:var(--text2);margin-top:2px;}
+.case-body{padding:18px 20px;}
+.problem-row{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:12px 15px;margin-bottom:12px;}
+.problem-label{font-size:10px;font-weight:500;color:var(--coral);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.problem-text{font-size:13px;color:var(--text2);line-height:1.6;}
+.chat-wrap{margin-bottom:12px;display:flex;flex-direction:column;gap:7px;}
+.bubble-u{display:flex;justify-content:flex-end;}
+.bubble-a{display:flex;justify-content:flex-start;}
+.bu{background:rgba(139,124,248,.15);border:1px solid rgba(139,124,248,.25);border-radius:12px 12px 4px 12px;padding:9px 13px;font-size:12px;color:var(--text);line-height:1.6;max-width:80%;}
+.ba{background:var(--bg3);border:1px solid var(--border2);border-radius:12px 12px 12px 4px;padding:9px 13px;font-size:12px;color:var(--text2);line-height:1.6;max-width:80%;}
+.result-row{background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:8px;padding:10px 15px;display:flex;align-items:center;gap:10px;}
+.result-label{font-size:10px;font-weight:500;color:var(--green);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;}
+.result-text{font-size:12px;color:var(--text2);}
+.time-badge{display:inline-block;font-size:11px;font-weight:500;background:rgba(74,222,128,.15);color:var(--green);border-radius:20px;padding:3px 12px;white-space:nowrap;flex-shrink:0;}
+
+/* 퀴즈 */
+.quiz-q{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.q-label{font-size:11px;color:var(--purple);font-weight:500;letter-spacing:.06em;margin-bottom:8px;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+.quiz-opt{padding:11px 15px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;text-align:left;font-family:inherit;}
+.quiz-opt:hover{border-color:var(--purple);color:var(--purple);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(74,222,128,.1);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--coral);background:rgba(248,113,113,.1);color:var(--coral);}
+.quiz-fb{margin-top:10px;padding:11px 15px;border-radius:8px;font-size:12px;display:none;}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);}
+.quiz-fb.ng{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--coral);}
+.quiz-next{margin-top:10px;display:none;}
+.quiz-next.show{display:inline-flex;}
+
+/* 요약 테이블 */
+.sum-table{width:100%;border-collapse:collapse;font-size:13px;}
+.sum-table th{background:var(--bg3);padding:11px 14px;text-align:left;font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--text2);border-bottom:1px solid var(--border);}
+.sum-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.sum-table tr:last-child td{border-bottom:none;}
+.sum-table tr:hover td{background:var(--bg2);}
+.pill{display:inline-block;font-size:11px;font-weight:500;border-radius:20px;padding:2px 8px;}
+.pp{background:rgba(139,124,248,.15);color:var(--purple);}
+.pt{background:rgba(45,212,191,.15);color:var(--teal);}
+.pa{background:rgba(251,191,36,.15);color:var(--amber);}
+
+/* 레이어 (자동화 영역) */
+.auto-layer{border-radius:10px;padding:14px 20px;margin-bottom:8px;border:1px solid transparent;cursor:default;}
+.al-teal{background:rgba(45,212,191,.10);border-color:rgba(45,212,191,.3);}
+.al-teal .al-title{color:var(--teal);}
+.al-purple{background:rgba(139,124,248,.10);border-color:rgba(139,124,248,.3);}
+.al-purple .al-title{color:var(--purple);}
+.al-amber{background:rgba(251,191,36,.10);border-color:rgba(251,191,36,.3);}
+.al-amber .al-title{color:var(--amber);}
+.al-blue{background:rgba(96,165,250,.10);border-color:rgba(96,165,250,.3);}
+.al-blue .al-title{color:var(--blue);}
+.al-coral{background:rgba(248,113,113,.10);border-color:rgba(248,113,113,.3);}
+.al-coral .al-title{color:var(--coral);}
+.al-green{background:rgba(74,222,128,.10);border-color:rgba(74,222,128,.3);}
+.al-green .al-title{color:var(--green);}
+.al-title{font-size:14px;font-weight:500;margin-bottom:3px;}
+.al-desc{font-size:12px;color:var(--text2);}
+
+footer{text-align:center;padding:50px 1.5rem;color:var(--text3);font-size:13px;}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;}
+.reveal.visible{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+
+<nav>
+  <div class="nav-logo">🦀 OpenClaw 강의자료</div>
+  <div class="nav-links">
+    <a href="#summary">요약</a>
+    <a href="#analogy">비유</a>
+    <a href="#diagram">도해</a>
+    <a href="#cases">사례</a>
+    <a href="#stepper">실천법</a>
+    <a href="#quiz">퀴즈</a>
+  </div>
+  <div class="nav-badge">오딘 스튜디오</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">6편 — 강의 사전 학습 자료</div>
+  <h1>내 일상에서<br><span>AI가 대신할 수 있는 일</span></h1>
+  <p>소상공인·연구생·주부·어르신 누구에게나 해당되는 자동화 시나리오를 사례와 함께 배워봐요. 강의 전에 이 자료를 먼저 읽어보세요.</p>
+  <div class="hero-cards">
+    <div class="hero-card">⏱ 예상 학습 시간 20분</div>
+    <div class="hero-card">📱 모바일 최적화</div>
+    <div class="hero-card">🧩 단계별 인터랙티브</div>
+    <div class="hero-card">🔰 초보자 눈높이</div>
+  </div>
+  <a href="#summary" class="start-btn">학습 시작하기 →</a>
+</div>
+
+<!-- ===== CH01 오늘 배울 것 ===== -->
+<section id="summary">
+<div class="reveal">
+  <div class="section-tag">Chapter 01</div>
+  <div class="section-title">오늘 배울 것 — 한 줄 요약</div>
+  <div class="section-sub">딱 한 문장으로 이번 강의의 핵심을 잡아봐요.</div>
+</div>
+
+<div class="reveal concept-box hl">
+  <div class="concept-emoji">🎯</div>
+  <div class="concept-title">내 일상에서 AI가 대신할 수 있는 일을 찾아내고, 직접 시도해본다</div>
+  <div class="concept-desc" style="margin-top:8px;">글쓰기, 검색, 정리, 반복 작업 — 이 4가지 키워드가 보이면 AI에게 맡길 수 있어요.<br>소상공인도, 연구생도, 주부도, 어르신도 모두 해당됩니다.</div>
+  <div class="analogy"><strong>핵심 공식:</strong> 반복된다 + 글쓰기·검색이 필요하다 = AI 자동화 대상!</div>
+</div>
+
+<div class="reveal">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+    <div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:18px 20px;">
+      <div style="font-size:11px;font-weight:500;color:var(--coral);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">AI 없이 혼자 할 때</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--text2);">
+        <div>✗ 답장 문자 30분 고민</div>
+        <div>✗ 보고서 초안 2시간 작성</div>
+        <div>✗ 정보 검색 1시간 헤맴</div>
+        <div>✗ SNS 문구 뭐라 쓸지 막막</div>
+        <div>✗ 행사 계획 어디서부터 막막</div>
+      </div>
+    </div>
+    <div style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:12px;padding:18px 20px;">
+      <div style="font-size:11px;font-weight:500;color:var(--green);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">AI 조수와 함께라면</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--text2);">
+        <div>✓ 답장 초안 1분 완성</div>
+        <div>✓ 보고서 뼈대 10분 완료</div>
+        <div>✓ 핵심 정보 2분 요약</div>
+        <div>✓ SNS 후보 문구 5개 즉시</div>
+        <div>✓ 체크리스트 10분에 완성</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH02 비유 ===== -->
+<section id="analogy">
+<div class="reveal">
+  <div class="section-tag">Chapter 02</div>
+  <div class="section-title">비유로 개념 이해</div>
+  <div class="section-sub">초등학생도 이해하는 비유로 AI 자동화를 느껴봐요.</div>
+</div>
+
+<div class="reveal concept-box hl">
+  <div class="concept-emoji">🏭</div>
+  <div class="concept-title">공장에 새로운 직원이 들어왔어요</div>
+  <div class="concept-desc" style="margin-top:8px;">
+    이 직원은 <strong style="color:var(--teal);">24시간 일하고, 밥도 안 먹고, 월급도 없고, 피곤해하지도 않아요.</strong><br>
+    게다가 글쓰기, 번역, 요약, 계산, 검색까지 뭐든 시키면 해요.<br><br>
+    단 한 가지 조건 — <strong style="color:var(--purple);">"뭘 해줘"라고 말을 잘 해야</strong> 일을 제대로 해요.<br>
+    말을 잘 할수록 결과물이 더 좋아지는 직원입니다.
+  </div>
+  <div class="analogy"><strong>핵심:</strong> AI는 절대 지치지 않는 만능 조수예요. 단, 명확한 지시가 필요해요.</div>
+</div>
+
+<div class="reveal" style="margin-top:8px;">
+  <div class="concept-box">
+    <div class="concept-title">🍱 도시락 가게 비유로 이해하기</div>
+    <div style="margin-top:12px;overflow:auto;">
+      <table class="sum-table">
+        <tr><th>역할</th><th>도시락 가게</th><th>AI 자동화 시스템</th></tr>
+        <tr><td>사장님 (나)</td><td>메뉴 정하고 주문 받기</td><td>AI에게 할 일 지시</td></tr>
+        <tr><td>AI 직원</td><td>재료 준비, 포장, 배달</td><td>글쓰기·검색·정리 수행</td></tr>
+        <tr><td>하는 일</td><td>반복되는 동일 작업</td><td>반복되는 디지털 작업</td></tr>
+        <tr><td>결과</td><td>사장님은 손님 응대에 집중</td><td>사람은 중요한 결정에 집중</td></tr>
+      </table>
+    </div>
+    <div class="analogy"><strong>핵심:</strong> 반복되는 일은 AI에게 맡기고, 정말 중요한 판단은 내가 해요!</div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH03 도해 ===== -->
+<section id="diagram">
+<div class="reveal">
+  <div class="section-tag">Chapter 03</div>
+  <div class="section-title">도해로 구조 파악</div>
+  <div class="section-sub">AI가 대신할 수 있는 일의 전체 지도를 한눈에 확인해봐요.</div>
+</div>
+
+<!-- 전체 흐름 도해 -->
+<div class="reveal diagram-wrap">
+  <div style="text-align:center;font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;">AI 자동화 — 전체 흐름 한눈에 보기</div>
+
+  <!-- 내 하루 -->
+  <div style="text-align:center;margin-bottom:12px;">
+    <div style="display:inline-block;background:rgba(139,124,248,.12);border:2px solid rgba(139,124,248,.5);border-radius:14px;padding:14px 32px;">
+      <div style="font-size:15px;font-weight:500;color:var(--purple);">📅 내 하루 업무 · 일상</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px;">아침부터 잠들기 전까지 모든 일</div>
+    </div>
+  </div>
+  <div style="text-align:center;color:var(--text3);margin-bottom:12px;">↓</div>
+
+  <!-- 판단 박스 -->
+  <div style="text-align:center;margin-bottom:12px;">
+    <div style="display:inline-block;background:rgba(251,191,36,.1);border:2px solid rgba(251,191,36,.4);border-radius:14px;padding:14px 28px;">
+      <div style="font-size:14px;font-weight:500;color:var(--amber);">🤔 AI에게 맡길 수 있나?</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px;">반복적 · 글쓰기 · 검색 → 맡기기 좋음</div>
+    </div>
+  </div>
+  <div style="text-align:center;color:var(--text3);margin-bottom:20px;">↓ ↓ ↓</div>
+
+  <!-- 6가지 영역 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
+    <div class="auto-layer al-teal">
+      <div class="al-title">📧 글쓰기 · 소통</div>
+      <div class="al-desc">이메일, 문자, 공지, 보고서 초안</div>
+    </div>
+    <div class="auto-layer al-purple">
+      <div class="al-title">🔍 정보 검색 · 분석</div>
+      <div class="al-desc">리서치, 요약, 비교, 데이터 정리</div>
+    </div>
+    <div class="auto-layer al-amber">
+      <div class="al-title">📅 일정 · 콘텐츠</div>
+      <div class="al-desc">달력 정리, SNS, 기획, 아이디어</div>
+    </div>
+    <div class="auto-layer al-blue">
+      <div class="al-title">📊 데이터 · 계산</div>
+      <div class="al-desc">엑셀 정리, 패턴 분석, 분류</div>
+    </div>
+    <div class="auto-layer al-coral">
+      <div class="al-title">📋 문서 · 정리</div>
+      <div class="al-desc">회의록, 체크리스트, 목차, 번역</div>
+    </div>
+    <div class="auto-layer al-green">
+      <div class="al-title">💡 아이디어 · 기획</div>
+      <div class="al-desc">행사 계획, 메뉴 구성, 제안서</div>
+    </div>
+  </div>
+  <div style="text-align:center;color:var(--text3);margin-bottom:14px;">↓</div>
+
+  <!-- 결과 -->
+  <div style="text-align:center;">
+    <div style="display:inline-block;background:rgba(74,222,128,.1);border:2px solid rgba(74,222,128,.4);border-radius:14px;padding:14px 32px;">
+      <div style="font-size:14px;font-weight:500;color:var(--green);">🎉 절약된 시간으로 할 수 있는 것</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:5px;line-height:1.8;">가족과 더 많은 대화 · 새로운 공부 · 취미 생활 · 더 중요한 결정에 집중</div>
+    </div>
+  </div>
+</div>
+
+<!-- 시간 절약 표 -->
+<div class="reveal" style="margin-top:8px;">
+  <div class="section-tag" style="margin-bottom:12px;">실제 시간 절약 효과</div>
+  <div style="overflow:auto;">
+    <table class="sum-table">
+      <tr><th>자동화 영역</th><th>전 (시간)</th><th>후 (시간)</th><th>절약</th></tr>
+      <tr><td>이메일 · 메시지 작성</td><td style="color:var(--coral);">하루 30~60분</td><td style="color:var(--green);">하루 5~10분</td><td><span class="pill pp">80% 단축</span></td></tr>
+      <tr><td>문서 작성 · 회의록</td><td style="color:var(--coral);">하루 1~2시간</td><td style="color:var(--green);">하루 15~20분</td><td><span class="pill pp">85% 단축</span></td></tr>
+      <tr><td>정보 검색 · 리서치</td><td style="color:var(--coral);">하루 1~3시간</td><td style="color:var(--green);">하루 10~20분</td><td><span class="pill pp">90% 단축</span></td></tr>
+      <tr><td>SNS 콘텐츠 제작</td><td style="color:var(--coral);">주 3~5시간</td><td style="color:var(--green);">주 30~60분</td><td><span class="pill pt">75% 단축</span></td></tr>
+      <tr><td>행사 · 일정 기획</td><td style="color:var(--coral);">수 시간 고민</td><td style="color:var(--green);">10~20분 완성</td><td><span class="pill pt">막막함 → 명확</span></td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH04 사례 ===== -->
+<section id="cases">
+<div class="reveal">
+  <div class="section-tag">Chapter 04</div>
+  <div class="section-title">3가지 실제 사례</div>
+  <div class="section-sub">소상공인 · 연구생·직장인 · 주부·어르신 — 각자의 상황에서 AI를 어떻게 쓰는지 대화 예시로 확인해봐요.</div>
+</div>
+
+<!-- 사례 1 -->
+<div class="reveal case-card">
+  <div class="case-header">
+    <div class="case-avatar av-orange">☕</div>
+    <div>
+      <div class="case-name">사례 1 — 소상공인 (카페 사장님)</div>
+      <div class="case-role">매일 SNS 포스팅, 손님 문의 답장, 메뉴 홍보 문구가 고민</div>
+    </div>
+  </div>
+  <div class="case-body">
+    <div class="problem-row">
+      <div class="problem-label">😫 문제 상황</div>
+      <div class="problem-text">오늘 신메뉴 출시인데, 인스타그램에 뭐라 쓸지 30분째 고민 중. 손님 문의 카톡도 쌓여있고, 할인 공지 문자도 보내야 하는데 시간이 없어요.</div>
+    </div>
+    <div class="chat-wrap">
+      <div class="bubble-u"><div class="bu">오늘 딸기 라떼 신메뉴 출시야. 인스타 문구 3가지 만들어줘. 귀엽고 친근한 느낌으로.</div></div>
+      <div class="bubble-a">
+        <div class="ba">
+          ① 봄이 왔어요! 딸기 라떼 한 잔으로 달콤하게 시작해요 🍓<br>
+          ② 우리 카페에 새 친구가 생겼어요. 딸기 라떼, 오늘 만나러 오세요!<br>
+          ③ 딸기향 가득한 봄날, 이 한 잔으로 충분해요.
+        </div>
+      </div>
+      <div class="bubble-u"><div class="bu">② 번이 좋다. 해시태그도 5개 추가해줘.</div></div>
+      <div class="bubble-a"><div class="ba">#딸기라떼 #신메뉴출시 #카페스타그램 #봄카페 #달콤한하루</div></div>
+    </div>
+    <div class="result-row">
+      <div>
+        <div class="result-label">✅ 결과</div>
+        <div class="result-text">SNS 문구 + 해시태그 3분 완성. 마음에 드는 것 골라서 바로 올렸더니 반응도 좋았고, 남은 시간엔 커피 내리는 데 집중!</div>
+      </div>
+      <div class="time-badge">30분 → 3분</div>
+    </div>
+  </div>
+</div>
+
+<!-- 사례 2 -->
+<div class="reveal case-card">
+  <div class="case-header">
+    <div class="case-avatar av-blue">📚</div>
+    <div>
+      <div class="case-name">사례 2 — 대학원생 (논문 준비 중)</div>
+      <div class="case-role">참고문헌 요약, 교수님께 이메일, 발표자료 목차 구성이 부담</div>
+    </div>
+  </div>
+  <div class="case-body">
+    <div class="problem-row">
+      <div class="problem-label">😫 문제 상황</div>
+      <div class="problem-text">영어 논문 10편을 읽고 요약해야 하는데, 교수님께 진행상황 이메일도 써야 하고, 다음 주 발표 목차도 잡아야 해서 어디서부터 시작해야 할지 모르겠어요.</div>
+    </div>
+    <div class="chat-wrap">
+      <div class="bubble-u"><div class="bu">아래 논문 초록을 한국어로 3줄 요약해줘. (초록 붙여넣기)</div></div>
+      <div class="bubble-a">
+        <div class="ba">
+          ① 이 연구는 기후변화가 작물 수확량에 미치는 영향을 분석했습니다.<br>
+          ② 10년간 데이터 기반, 온도 1도 상승 시 수확량 8% 감소를 확인했습니다.<br>
+          ③ 저자들은 내열성 품종 개발이 시급하다고 결론지었습니다.
+        </div>
+      </div>
+      <div class="bubble-u"><div class="bu">교수님께 연구 진행상황 메일 초안도 써줘. 공손하게.</div></div>
+      <div class="bubble-a"><div class="ba">교수님, 안녕하세요. 연구 진행상황을 간략히 보고드립니다. 현재 문헌 검토를 완료하였으며, 이번 주 안으로 데이터 분석 단계에 착수할 예정입니다. 추가 지도 편달 부탁드립니다.</div></div>
+    </div>
+    <div class="result-row">
+      <div>
+        <div class="result-label">✅ 결과</div>
+        <div class="result-text">논문 10편 요약을 2시간에서 25분으로 단축. 교수님 이메일 초안도 AI가 잡아줘서 내용만 확인하고 전송. 발표 목차도 함께 짜줘서 방향 잡기 성공!</div>
+      </div>
+      <div class="time-badge">2시간 → 25분</div>
+    </div>
+  </div>
+</div>
+
+<!-- 사례 3 -->
+<div class="reveal case-card">
+  <div class="case-header">
+    <div class="case-avatar av-green">🏠</div>
+    <div>
+      <div class="case-name">사례 3 — 주부 · 어르신</div>
+      <div class="case-role">가족 행사 준비, 건강 정보 검색, 지인 문자 쓰기가 어렵고 시간 걸림</div>
+    </div>
+  </div>
+  <div class="case-body">
+    <div class="problem-row">
+      <div class="problem-label">😫 문제 상황</div>
+      <div class="problem-text">어머니 칠순 잔치를 준비하고 싶은데, 식당도 알아보고, 초대 문자도 써야 하고, 순서도 짜야 해서 뭐부터 해야 할지 막막해요.</div>
+    </div>
+    <div class="chat-wrap">
+      <div class="bubble-u"><div class="bu">어머니 칠순 잔치 준비하려고. 20명 정도 모일 것 같아. 해야 할 일 목록이랑 순서를 알려줘.</div></div>
+      <div class="bubble-a">
+        <div class="ba">
+          ① 4주 전: 날짜 확정, 식당 예약 (20인 이상 가능한 곳)<br>
+          ② 3주 전: 초대 문자 발송, 참석 여부 확인<br>
+          ③ 1주 전: 케이크·꽃다발 주문, 당일 순서표 작성<br>
+          ④ 당일: 기념 사진 담당자 지정, 영상 편집 후 선물
+        </div>
+      </div>
+      <div class="bubble-u"><div class="bu">초대 문자도 예쁘게 써줘. 따뜻한 느낌으로.</div></div>
+      <div class="bubble-a"><div class="ba">어머님의 칠순을 함께 축하해 주시겠어요? 소중한 분들과 기쁜 날을 나누고 싶습니다. 날짜: ○월 ○일 / 장소: ○○식당 / 연락: 000-0000-0000 💐</div></div>
+    </div>
+    <div class="result-row">
+      <div>
+        <div class="result-label">✅ 결과</div>
+        <div class="result-text">막막했던 행사 준비가 10분 만에 체크리스트로 정리! 초대 문자 문구도 예쁘게 완성되어 친척들 반응 좋았고, 잔치 당일도 여유 있게 진행했어요.</div>
+      </div>
+      <div class="time-badge">막막함 → 10분 완성</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH05 스테퍼 ===== -->
+<section id="stepper">
+<div class="reveal">
+  <div class="section-tag">Chapter 05</div>
+  <div class="section-title">단계별 실천법</div>
+  <div class="section-sub">내 자동화 시나리오를 찾는 5단계를 단계별로 클릭해서 확인해봐요.</div>
+</div>
+
+<div class="reveal" style="margin-top:8px;">
+  <div class="section-tag" style="margin-bottom:4px;">내 AI 자동화 시나리오 찾기 5단계 — 클릭해서 단계별로 확인해요</div>
+  <div class="stepper" id="stepper-auto">
+    <div class="stepper-dots" id="dots-auto"></div>
+    <div class="stepper-body" id="body-auto"></div>
+    <div class="stepper-nav">
+      <button class="s-btn" onclick="smove('auto',-1)">← 이전</button>
+      <span class="s-counter" id="cnt-auto"></span>
+      <button class="s-btn primary" id="next-auto" onclick="smove('auto',1)">다음 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- 프롬프트 공식 도해 -->
+<div class="reveal diagram-wrap" style="margin-top:28px;">
+  <div style="text-align:center;font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;">AI에게 잘 말하는 공식</div>
+  <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:center;max-width:700px;margin:0 auto;">
+    <div style="background:rgba(45,212,191,.1);border:1.5px solid rgba(45,212,191,.4);border-radius:12px;padding:16px 14px;text-align:center;">
+      <div style="font-size:13px;font-weight:500;color:var(--teal);margin-bottom:6px;">누가 / 상황</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.8;">"카페 사장님이"<br>"대학원생이"<br>"주부가"</div>
+    </div>
+    <div style="color:var(--text3);font-size:18px;text-align:center;">+</div>
+    <div style="background:rgba(139,124,248,.1);border:1.5px solid rgba(139,124,248,.4);border-radius:12px;padding:16px 14px;text-align:center;">
+      <div style="font-size:13px;font-weight:500;color:var(--purple);margin-bottom:6px;">무엇을 / 작업</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.8;">"SNS 문구를"<br>"논문을 요약해"<br>"행사 계획을"</div>
+    </div>
+    <div style="color:var(--text3);font-size:18px;text-align:center;">+</div>
+    <div style="background:rgba(251,191,36,.1);border:1.5px solid rgba(251,191,36,.4);border-radius:12px;padding:16px 14px;text-align:center;">
+      <div style="font-size:13px;font-weight:500;color:var(--amber);margin-bottom:6px;">어떻게 / 스타일</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.8;">"귀엽게"<br>"3줄로"<br>"따뜻하게"</div>
+    </div>
+  </div>
+  <div style="margin-top:18px;padding:12px 16px;background:var(--bg3);border-radius:9px;border:1px solid var(--border);text-align:center;font-size:12px;color:var(--text2);line-height:1.8;">
+    나쁜 예: <span style="color:var(--coral);">"이메일 써줘"</span> &nbsp;→&nbsp; 좋은 예: <span style="color:var(--green);">"카페 사장님이 오늘 신메뉴 출시를 단골 손님에게 알리는 친근한 문자 3줄 써줘"</span><br>
+    <span style="color:var(--text3);">구체적일수록 AI가 더 잘 이해하고 더 좋은 결과를 만들어요!</span>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH06 퀴즈 ===== -->
+<section id="quiz">
+<div class="reveal">
+  <div class="section-tag">Chapter 06</div>
+  <div class="section-title">이해도 확인 퀴즈</div>
+  <div class="section-sub">지금까지 배운 내용을 퀴즈로 확인해봐요. 강의 시간에 틀린 문제를 질문해 주세요!</div>
+</div>
+<div class="reveal" id="quiz-wrap"></div>
+</section>
+
+<!-- 요약 -->
+<section>
+<div class="reveal">
+  <div class="section-tag">정리</div>
+  <div class="section-title">핵심 개념 한눈에 보기</div>
+</div>
+<div class="reveal" style="overflow:auto;margin-top:16px;">
+  <table class="sum-table">
+    <tr><th>개념</th><th>한 줄 정의</th><th>비유</th><th>중요도</th></tr>
+    <tr><td><strong>AI 자동화</strong></td><td>반복 작업을 AI가 대신 처리</td><td>24시간 만능 조수</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong>자동화 대상</strong></td><td>반복·글쓰기·검색이 필요한 일</td><td>공장 반복 작업</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong>프롬프트</strong></td><td>AI에게 보내는 지시 문장</td><td>도시락 주문서</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong>상황+작업+스타일</strong></td><td>좋은 프롬프트의 3가지 요소</td><td>레시피 재료</td><td><span class="pill pt">중요</span></td></tr>
+    <tr><td><strong>반복 수정</strong></td><td>AI와 대화하며 결과 다듬기</td><td>시식 후 간 조절</td><td><span class="pill pt">중요</span></td></tr>
+    <tr><td><strong>시간 절약</strong></td><td>아낀 시간을 더 중요한 일에</td><td>배달 후 여유 시간</td><td><span class="pill pa">참고</span></td></tr>
+  </table>
+</div>
+
+<!-- 다음 편 예고 -->
+<div class="reveal" style="margin-top:36px;">
+  <div style="background:rgba(139,124,248,.08);border:1px solid rgba(139,124,248,.3);border-radius:14px;padding:22px 24px;">
+    <div style="font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">다음 편 예고 — 7편</div>
+    <div style="font-size:17px;font-weight:500;margin-bottom:8px;">프롬프트 설계 — AI에게 정확하게 말하는 기술</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+      좋은 질문 하나가 1시간짜리 답을 만들어냅니다.<br>
+      역할 부여 · 조건 설정 · 출력 형식 지정하는 3가지 공식 + 소상공인·연구생·주부별 실전 템플릿 제공
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <p style="margin-bottom:6px;">오딘 스튜디오 강의자료 · 6편 — AI 자동화 시나리오</p>
+  <p>강의 시간에 궁금한 점을 자유롭게 질문해 주세요 😊</p>
+</footer>
+
+<script>
+// 진행률
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+// 스크롤 reveal
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+// 활성 nav
+const secs=document.querySelectorAll('section[id]');
+const navAs=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});
+  navAs.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+});
+
+// ===== 스테퍼 데이터 =====
+const stepperData = {
+  auto: [
+    {label:'1단계 — 발견',title:'내 하루를 30분 단위로 적어보기',
+     body:'오늘 하루 동안 한 일을 순서대로 적어봅니다. 아침에 일어나서부터 잠들기 전까지, 업무든 집안일이든 모두 다 써보세요. 이것이 자동화의 출발점입니다.',
+     mem:{cls:'s-amber',title:'실습 힌트 — 이렇게 써보세요',text:'9시: 이메일 확인 (30분)\n10시: 보고서 작성 (2시간)\n12시: 점심\n13시: 미팅 준비 (1시간)\n15시: SNS 포스팅 고민 (40분)\n...'}},
+    {label:'2단계 — 표시',title:'반복되거나 귀찮은 일에 동그라미 치기',
+     body:'적은 목록을 보면서, 매일 비슷하게 반복되는 일이나 "귀찮다", "시간이 많이 걸린다"고 느끼는 것에 동그라미를 칩니다. 이게 바로 AI 자동화 후보입니다.',
+     mem:{cls:'s-purple',title:'AI에 맡기기 좋은 것',text:'✓ 글쓰기가 필요한 것 (이메일, 문자)\n✓ 검색이 필요한 것 (정보 찾기, 비교)\n✓ 정리가 필요한 것 (목록, 요약)\n✓ 매일 비슷하게 반복되는 것\n✗ 중요한 최종 판단 (사람이 해야 함)'}},
+    {label:'3단계 — 작성',title:'AI에게 시킬 말(프롬프트) 만들기',
+     body:'동그라미 친 일 중 하나를 골라, AI에게 부탁할 말을 만들어봅니다. "누가(상황) + 뭘(작업) + 어떻게(스타일)"를 넣으면 훨씬 잘 만들어줍니다.',
+     mem:{cls:'s-green',title:'좋은 프롬프트 vs 나쁜 프롬프트',text:'나쁨: "이메일 써줘"\n\n좋음: "카페 사장님이 오늘 신메뉴\n출시를 단골손님에게 알리는\n친근한 문자 3줄 써줘"'}},
+    {label:'4단계 — 대화',title:'AI와 대화하며 결과 다듬기',
+     body:'AI가 처음 내놓은 결과가 완벽하지 않아도 괜찮습니다! "조금 더 짧게", "좀 더 따뜻하게", "다른 버전으로" 같이 계속 말을 걸면서 원하는 결과에 가깝게 만들어가면 됩니다.',
+     mem:{cls:'s-blue',title:'이렇게 수정 요청해요',text:'첫 결과 받음\n→ "좀 더 짧게 해줘"\n→ "더 따뜻한 느낌으로"\n→ "다른 버전 3가지 더"\n→ 마음에 드는 것 선택!'}},
+    {label:'5단계 — 확장',title:'절약된 시간을 기록하고 다음 자동화 찾기',
+     body:'AI 덕분에 아낀 시간을 기록해봅니다. "이메일 30분 → 5분"처럼 숫자로 적으면 뿌듯함이 두 배! 그 다음엔 목록에서 또 다른 귀찮은 일을 찾아 자동화해봅니다.',
+     mem:{cls:'s-green',title:'자동화 확장 순서',text:'1주차: 이메일 자동화 정착\n2주차: SNS 문구 자동화 추가\n3주차: 보고서 초안 자동화 추가\n4주차: 내 자동화 지도 완성!'}}
+  ]
+};
+
+const stepperState = {auto:0};
+
+function renderStepper(id) {
+  const data = stepperData[id];
+  const cur = stepperState[id];
+  const s = data[cur];
+  document.getElementById('body-'+id).innerHTML = `
+    <div class="s-label">${s.label}</div>
+    <div class="s-title">${s.title}</div>
+    <div class="s-body">${s.body}</div>
+    <div class="s-mem ${s.mem.cls}">
+      <div class="s-mem-title">${s.mem.title}</div>
+      <div class="s-mem-text">${s.mem.text}</div>
+    </div>`;
+  document.getElementById('dots-'+id).innerHTML = data.map((_,i)=>`<div class="sdot ${i===cur?'on':''}" onclick="stepperState['${id}']=${i};renderStepper('${id}')"></div>`).join('');
+  document.getElementById('cnt-'+id).textContent = `${cur+1} / ${data.length}`;
+  document.getElementById('next-'+id).textContent = cur===data.length-1 ? '처음으로 ↺' : '다음 →';
+}
+
+function smove(id, dir) {
+  const data = stepperData[id];
+  stepperState[id] = (stepperState[id] + dir + data.length) % data.length;
+  renderStepper(id);
+}
+
+renderStepper('auto');
+
+// ===== 퀴즈 =====
+const quizData = [
+  {q:'AI 자동화를 시작할 때 가장 먼저 해야 할 일은 무엇인가요?',
+   opts:['AI 앱을 설치하고 유료 구독 결제하기','내 하루 일과를 30분 단위로 먼저 적어보기','프로그래밍과 코딩을 공부하기','가장 비싼 AI 서비스 고르기'],
+   ans:1,exp:'내 하루를 먼저 살펴봐야 어떤 일을 맡길 수 있는지 보여요. 목록을 적어보면 반복되는 일과 귀찮은 일이 자연스럽게 눈에 띕니다.'},
+  {q:'AI에게 맡기기 가장 좋은 일의 특징은 무엇인가요?',
+   opts:['회사의 중요한 전략적 의사결정','처음 만나는 전혀 새로운 아이디어 발명','매일 비슷하게 반복되고 글쓰기나 검색이 필요한 일','사람의 감정이 중요한 심리 상담'],
+   ans:2,exp:'반복되고, 글쓰기와 검색이 필요한 일이 AI에게 딱 맞아요. 중요한 판단과 감성적 결정은 사람이 직접 해야 합니다.'},
+  {q:'"좋은 프롬프트"를 만드는 3가지 요소는 무엇인가요?',
+   opts:['길이 + 영어 + 전문 용어','짧게 + 간단히 + 한 번만','상황(누가) + 작업(뭘) + 스타일(어떻게)','이모지 + 숫자 + 특수문자'],
+   ans:2,exp:'"카페 사장님이(상황) + 신메뉴 홍보 문자를(작업) + 친근하게(스타일)" 이 3가지를 넣으면 AI가 훨씬 정확하게 이해해요.'},
+  {q:'AI가 처음 만들어준 결과물이 마음에 들지 않을 때 어떻게 해야 할까요?',
+   opts:['AI는 틀렸으니 사용을 포기한다','처음 결과가 최선이므로 그냥 쓴다','"조금 더 짧게", "더 따뜻하게" 등 추가 요청으로 계속 다듬는다','다른 AI 서비스로 바꾼다'],
+   ans:2,exp:'AI는 피곤해하지 않아요! "조금 더 짧게", "다른 버전으로" 등 계속 대화하며 원하는 결과에 가깝게 다듬어가면 됩니다.'},
+  {q:'카페 사장님 사례에서 AI를 쓰기 전과 후의 시간 변화는?',
+   opts:['10분 → 1분','30분 → 3분','2시간 → 30분','1시간 → 10분'],
+   ans:1,exp:'SNS 문구 작성이 30분 고민에서 3분 완성으로 줄었어요. 이처럼 반복되는 글쓰기 작업은 AI 자동화 효과가 매우 커요.'}
+];
+
+let qIdx=0, answered=[];
+
+function renderQuiz() {
+  const wrap=document.getElementById('quiz-wrap');
+  if(qIdx>=quizData.length){
+    const ok=answered.filter(Boolean).length;
+    wrap.innerHTML=`<div class="concept-box hl" style="text-align:center;padding:36px;">
+      <div style="font-size:44px;margin-bottom:14px;">${ok>=4?'🎉':ok>=3?'👍':'📚'}</div>
+      <div style="font-size:18px;font-weight:500;margin-bottom:10px;">${ok}문제 / ${quizData.length}문제 정답!</div>
+      <div class="concept-desc" style="margin-bottom:22px;">${ok===5?'완벽해요! 강의 시간에 심화 질문을 준비해 오세요 😊':ok>=3?'잘 했어요! 틀린 문제를 중심으로 강의 때 질문해 주세요.':'괜찮아요! 다시 읽어보고 강의 때 함께 이해해요.'}</div>
+      <button class="start-btn" onclick="qIdx=0;answered=[];renderQuiz()">다시 풀기</button>
+    </div>`;
+    return;
+  }
+  const q=quizData[qIdx];
+  wrap.innerHTML=`<div class="quiz-q">
+    <div class="q-label">Q${qIdx+1} / ${quizData.length}</div>
+    <div style="font-size:15px;font-weight:500;">${q.q}</div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answer(${i})">${['①','②','③','④'][i]} ${o}</button>`).join('')}
+    </div>
+  </div>
+  <div class="quiz-fb" id="qfb"></div>
+  <div class="quiz-next" id="qnext"><button class="start-btn" onclick="qIdx++;renderQuiz()">${qIdx<quizData.length-1?'다음 문제 →':'결과 보기 →'}</button></div>`;
+}
+
+function answer(i){
+  const q=quizData[qIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  const ok=i===q.ans;
+  opts[i].classList.add(ok?'correct':'wrong');
+  if(!ok) opts[q.ans].classList.add('correct');
+  answered.push(ok);
+  const fb=document.getElementById('qfb');
+  fb.className=`quiz-fb show ${ok?'ok':'ng'}`;
+  fb.innerHTML=`${ok?'✅ 정답!':'❌ 오답!'} — ${q.exp}`;
+  document.getElementById('qnext').classList.add('show');
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>첫 명령 내리기 — 오딘 스튜디오 강의자료 5편</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14;--bg2:#13161d;--bg3:#1a1e28;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8eaf0;--text2:#9499a8;--text3:#5a5f70;
+  --purple:#8b7cf8;--purple2:#6c5ce7;
+  --teal:#2dd4bf;--amber:#fbbf24;--coral:#f87171;--green:#4ade80;--blue:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.7;min-height:100vh;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,15,20,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.nav-logo{font-size:14px;font-weight:500;color:var(--purple);}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{padding:5px 11px;border-radius:6px;font-size:12px;color:var(--text2);text-decoration:none;transition:all .2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--bg3);color:var(--text);}
+.nav-badge{font-size:11px;background:rgba(139,124,248,.15);color:var(--purple);border:1px solid rgba(139,124,248,.3);border-radius:20px;padding:3px 10px;font-weight:500;}
+@media(max-width:600px){.nav-links{display:none;}}
+
+.progress-wrap{position:fixed;top:52px;left:0;right:0;height:2px;z-index:99;background:var(--border);}
+.progress-bar{height:100%;background:var(--purple);width:0%;transition:width .1s;}
+
+.hero{padding:130px 1.5rem 70px;text-align:center;max-width:780px;margin:0 auto;}
+.hero-tag{display:inline-block;font-size:11px;font-weight:500;color:var(--teal);border:1px solid rgba(45,212,191,.3);background:rgba(45,212,191,.08);border-radius:20px;padding:4px 14px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:22px;}
+.hero h1{font-size:clamp(26px,5vw,44px);font-weight:700;line-height:1.25;margin-bottom:18px;}
+.hero h1 span{color:var(--purple);}
+.hero p{font-size:15px;color:var(--text2);max-width:540px;margin:0 auto 32px;}
+.hero-cards{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+.hero-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;}
+.start-btn{display:inline-flex;align-items:center;gap:8px;background:var(--purple2);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;transition:all .2s;font-family:inherit;}
+.start-btn:hover{background:var(--purple);transform:translateY(-1px);}
+
+section{max-width:900px;margin:0 auto;padding:70px 1.5rem;border-bottom:1px solid var(--border);}
+.section-tag{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
+.section-title{font-size:clamp(20px,3vw,30px);font-weight:700;margin-bottom:10px;}
+.section-sub{font-size:14px;color:var(--text2);margin-bottom:36px;max-width:580px;}
+
+.concept-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;}
+.concept-box.hl{border-color:rgba(139,124,248,.4);background:rgba(139,124,248,.06);}
+.concept-box.danger{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05);}
+.concept-box.teal{border-color:rgba(45,212,191,.35);background:rgba(45,212,191,.05);}
+.concept-emoji{font-size:26px;margin-bottom:10px;}
+.concept-title{font-size:15px;font-weight:500;margin-bottom:7px;}
+.concept-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+.analogy{margin-top:12px;padding:10px 14px;background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;font-size:12px;color:var(--text2);}
+.analogy strong{color:var(--amber);font-weight:500;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+/* 스테퍼 공통 */
+.stepper{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:8px;}
+.stepper-dots{display:flex;gap:7px;justify-content:center;padding:18px 0 0;}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--border2);transition:background .3s;cursor:pointer;}
+.sdot.on{background:var(--purple);}
+.stepper-body{padding:24px;}
+.s-label{font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.s-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:10px;}
+.s-body{font-size:13px;color:var(--text2);line-height:1.7;}
+.s-code{margin-top:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);line-height:1.6;}
+.s-mem{margin-top:12px;border-radius:8px;padding:11px 14px;}
+.s-mem-title{font-size:11px;font-weight:500;margin-bottom:5px;}
+.s-mem-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);line-height:1.6;}
+.s-green{background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.2);}
+.s-green .s-mem-title{color:var(--teal);}
+.s-purple{background:rgba(139,124,248,.08);border:1px solid rgba(139,124,248,.2);}
+.s-purple .s-mem-title{color:var(--purple);}
+.s-amber{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);}
+.s-amber .s-mem-title{color:var(--amber);}
+.s-coral{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);}
+.s-coral .s-mem-title{color:var(--coral);}
+.s-blue{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);}
+.s-blue .s-mem-title{color:var(--blue);}
+.stepper-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px 20px;}
+.s-btn{padding:8px 20px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:13px;cursor:pointer;transition:background .2s;font-family:inherit;}
+.s-btn:hover{background:var(--bg2);}
+.s-btn.primary{background:var(--purple2);color:#fff;border-color:var(--purple2);}
+.s-btn.primary:hover{background:var(--purple);}
+.s-counter{font-size:12px;color:var(--text3);}
+
+/* 도해 공통 */
+.diagram-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px 20px;margin:24px 0;}
+
+/* 오류 카드 */
+.error-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:0;overflow:hidden;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+.error-card:hover{border-color:var(--border2);}
+.error-card.open{border-color:rgba(248,113,113,.4);}
+.error-header{display:flex;align-items:center;gap:10px;padding:14px 18px;}
+.error-code{font-size:11px;font-weight:500;background:rgba(248,113,113,.15);color:var(--coral);border:1px solid rgba(248,113,113,.3);border-radius:20px;padding:2px 10px;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.error-title{font-size:13px;font-weight:500;flex:1;}
+.error-arrow{font-size:12px;color:var(--text3);transition:transform .2s;}
+.error-card.open .error-arrow{transform:rotate(90deg);}
+.error-body{display:none;padding:0 18px 16px;}
+.error-card.open .error-body{display:block;}
+.error-msg{background:var(--bg3);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--coral);line-height:1.6;margin-bottom:10px;}
+.error-fix-label{font-size:11px;font-weight:500;color:var(--green);margin-bottom:4px;}
+.error-fix-text{font-size:13px;color:var(--text2);line-height:1.6;}
+.error-fix-code{display:block;margin-top:6px;background:var(--bg3);border:1px solid rgba(74,222,128,.2);border-radius:8px;padding:9px 13px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);line-height:1.6;}
+
+/* 사례 카드 */
+.case-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:4px;}
+.case-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s;}
+.case-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.case-who{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;}
+.case-title{font-size:14px;font-weight:500;margin-bottom:8px;}
+.case-desc{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px;}
+.case-cmd{background:var(--bg3);border-radius:8px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);line-height:1.7;margin-bottom:10px;}
+.case-result{font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px;}
+.dot-ok{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0;}
+
+/* 퀴즈 */
+.quiz-q{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.q-label{font-size:11px;color:var(--purple);font-weight:500;letter-spacing:.06em;margin-bottom:8px;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+.quiz-opt{padding:11px 15px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;text-align:left;font-family:inherit;}
+.quiz-opt:hover{border-color:var(--purple);color:var(--purple);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(74,222,128,.1);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--coral);background:rgba(248,113,113,.1);color:var(--coral);}
+.quiz-fb{margin-top:10px;padding:11px 15px;border-radius:8px;font-size:12px;display:none;}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);}
+.quiz-fb.ng{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--coral);}
+.quiz-next{margin-top:10px;display:none;}
+.quiz-next.show{display:inline-flex;}
+
+/* 요약 테이블 */
+.sum-table{width:100%;border-collapse:collapse;font-size:13px;}
+.sum-table th{background:var(--bg3);padding:11px 14px;text-align:left;font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--text2);border-bottom:1px solid var(--border);}
+.sum-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.sum-table tr:last-child td{border-bottom:none;}
+.sum-table tr:hover td{background:var(--bg2);}
+.pill{display:inline-block;font-size:11px;font-weight:500;border-radius:20px;padding:2px 8px;}
+.pp{background:rgba(139,124,248,.15);color:var(--purple);}
+.pt{background:rgba(45,212,191,.15);color:var(--teal);}
+.pa{background:rgba(251,191,36,.15);color:var(--amber);}
+.pc{background:rgba(248,113,113,.15);color:var(--coral);}
+
+/* 체크리스트 */
+.checklist{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+.check-item{display:flex;align-items:center;gap:12px;padding:11px 15px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:var(--border2);}
+.check-item.checked{border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.05);}
+.check-box{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:13px;color:transparent;}
+.check-item.checked .check-box{background:rgba(74,222,128,.2);border-color:var(--green);color:var(--green);}
+.check-text{font-size:13px;}
+.check-item.checked .check-text{color:var(--text2);text-decoration:line-through;}
+.check-progress-wrap{background:var(--border);border-radius:4px;height:3px;margin-top:14px;overflow:hidden;}
+.check-progress-bar{height:100%;border-radius:4px;background:var(--green);width:0%;transition:width .4s;}
+
+footer{text-align:center;padding:50px 1.5rem;color:var(--text3);font-size:13px;}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* 다음편 예고 카드 */
+.next-ep{background:rgba(139,124,248,.07);border:1px solid rgba(139,124,248,.3);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;}
+.next-ep-badge{display:inline-block;font-size:11px;font-weight:500;color:var(--purple);background:rgba(139,124,248,.15);border-radius:20px;padding:3px 12px;}
+.next-ep-title{font-size:18px;font-weight:700;}
+.next-ep-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+.next-ep-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.next-ep-tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;background:rgba(139,124,248,.12);color:var(--purple);}
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+
+<nav>
+  <div class="nav-logo">🦀 OpenClaw 강의자료</div>
+  <div class="nav-links">
+    <a href="#summary">요약</a>
+    <a href="#analogy">비유</a>
+    <a href="#flow">흐름도</a>
+    <a href="#cases">사례</a>
+    <a href="#practice">실습</a>
+    <a href="#errors">오류</a>
+    <a href="#quiz">퀴즈</a>
+  </div>
+  <div class="nav-badge">5편 · 첫 명령 내리기</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">오딘 스튜디오 강의자료 · 5편</div>
+  <h1>내 봇에게<br><span>첫 명령 내리기</span></h1>
+  <p>텔레그램 봇에 직접 API 명령을 보내고, 오류가 났을 때 침착하게 고치는 법을 익혀봐요.</p>
+  <div class="hero-cards">
+    <div class="hero-card">⏱ 예상 학습 시간 20분</div>
+    <div class="hero-card">📱 모바일 최적화</div>
+    <div class="hero-card">⌨️ 직접 따라하기</div>
+    <div class="hero-card">🔰 초보자 눈높이</div>
+  </div>
+  <a href="#summary" class="start-btn">학습 시작하기 →</a>
+</div>
+
+<!-- ===== CH01 한 줄 요약 ===== -->
+<section id="summary">
+<div class="reveal">
+  <div class="section-tag">Chapter 01</div>
+  <div class="section-title">오늘 배울 것 한 줄 요약</div>
+  <div class="section-sub">복잡한 기술 용어 없이, 핵심 한 문장으로 시작해요.</div>
+</div>
+
+<div class="reveal concept-box hl">
+  <div class="concept-emoji">📡</div>
+  <div class="concept-title">내 봇에게 직접 말 걸기 — 명령을 보내고, 오류가 나도 침착하게 고치는 법을 익힌다</div>
+  <div class="concept-desc" style="margin-top:10px;">텔레그램 API URL 한 줄이면 봇이 움직입니다. 오늘은 <strong style="color:var(--teal);">getMe → getUpdates → sendMessage</strong> 순서로 직접 눌러봅니다.</div>
+  <div class="analogy"><strong>한 줄 공식:</strong> URL = 봇에게 보내는 편지 주소. 주소만 맞으면 전달 완료!</div>
+</div>
+
+<!-- 핵심 키워드 -->
+<div class="reveal" style="margin-top:20px;">
+  <div class="section-tag" style="margin-bottom:12px;">오늘의 핵심 키워드</div>
+  <div class="grid-3">
+    <div style="background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.25);border-radius:12px;padding:18px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:8px;">⌨️</div>
+      <div style="font-size:13px;font-weight:500;color:var(--teal);margin-bottom:4px;">API 명령어</div>
+      <div style="font-size:12px;color:var(--text2);">URL로 봇에게 원하는 행동을 지시하는 표준 방식</div>
+    </div>
+    <div style="background:rgba(139,124,248,.08);border:1px solid rgba(139,124,248,.25);border-radius:12px;padding:18px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:8px;">🔍</div>
+      <div style="font-size:13px;font-weight:500;color:var(--purple);margin-bottom:4px;">오류 코드 읽기</div>
+      <div style="font-size:12px;color:var(--text2);">숫자 코드로 무엇이 잘못됐는지 파악하는 방법</div>
+    </div>
+    <div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:12px;padding:18px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:8px;">✉️</div>
+      <div style="font-size:13px;font-weight:500;color:var(--amber);margin-bottom:4px;">첫 메시지 전송</div>
+      <div style="font-size:12px;color:var(--text2);">봇을 통해 텔레그램으로 실제 메시지 보내기</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH02 비유 ===== -->
+<section id="analogy">
+<div class="reveal">
+  <div class="section-tag">Chapter 02</div>
+  <div class="section-title">비유로 개념 이해</div>
+  <div class="section-sub">편의점 무인 주문기로 이해하면 바로 됩니다.</div>
+</div>
+
+<div class="reveal concept-box hl">
+  <div class="concept-title">🏪 편의점 무인 주문기 비유</div>
+  <div class="concept-desc" style="margin-top:8px;">봇에게 명령을 내리는 건 편의점 무인 주문기에서 버튼 누르는 것과 완전히 같아요.<br>내가 버튼을 누르면 → 기계가 처리하고 → 결과(음료)가 나옵니다.</div>
+  <div class="analogy"><strong>오류?</strong> 주문기가 "품절"이라고 알려주는 것과 같아요. 당황하지 말고 메시지를 읽으면 됩니다!</div>
+</div>
+
+<!-- 비유 비교 도해 -->
+<div class="reveal diagram-wrap">
+  <div style="text-align:center;font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;">편의점 vs 텔레그램 봇 — 구조가 똑같아요!</div>
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:center;max-width:760px;margin:0 auto;">
+
+    <!-- 편의점 -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="text-align:center;font-size:11px;color:var(--text3);margin-bottom:4px;">편의점 주문기</div>
+      <div style="background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.3);border-radius:10px;padding:12px 16px;text-align:center;">
+        <div style="font-size:12px;font-weight:500;color:var(--teal);">나 (손님)</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">버튼 누르기</div>
+      </div>
+      <div style="text-align:center;color:var(--text3);font-size:13px;padding:2px 0;">↓</div>
+      <div style="background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.3);border-radius:10px;padding:12px 16px;text-align:center;">
+        <div style="font-size:12px;font-weight:500;color:var(--teal);">무인 주문기</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">요청 처리</div>
+      </div>
+      <div style="text-align:center;color:var(--text3);font-size:13px;padding:2px 0;">↓</div>
+      <div style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:10px;padding:12px 16px;text-align:center;">
+        <div style="font-size:12px;font-weight:500;color:var(--green);">영수증 + 음료 나옴</div>
+      </div>
+    </div>
+
+    <!-- 가운데 구분 -->
+    <div style="padding:0 24px;text-align:center;font-size:22px;color:var(--text3);">≒</div>
+
+    <!-- 텔레그램 봇 -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="text-align:center;font-size:11px;color:var(--text3);margin-bottom:4px;">텔레그램 봇 API</div>
+      <div style="background:rgba(139,124,248,.1);border:1px solid rgba(139,124,248,.3);border-radius:10px;padding:12px 16px;text-align:center;">
+        <div style="font-size:12px;font-weight:500;color:var(--purple);">나 (사용자)</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">URL로 명령 전송</div>
+      </div>
+      <div style="text-align:center;color:var(--text3);font-size:13px;padding:2px 0;">↓</div>
+      <div style="background:rgba(139,124,248,.1);border:1px solid rgba(139,124,248,.3);border-radius:10px;padding:12px 16px;text-align:center;">
+        <div style="font-size:12px;font-weight:500;color:var(--purple);">텔레그램 서버</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">요청 처리</div>
+      </div>
+      <div style="text-align:center;color:var(--text3);font-size:13px;padding:2px 0;">↓</div>
+      <div style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:10px;padding:12px 16px;text-align:center;">
+        <div style="font-size:12px;font-weight:500;color:var(--green);">JSON 결과 반환</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 대응 테이블 -->
+  <div style="margin-top:20px;overflow:auto;">
+    <table class="sum-table">
+      <tr><th>편의점</th><th>텔레그램 봇 API</th><th>설명</th></tr>
+      <tr><td>버튼 메뉴</td><td style="color:var(--teal);">API 명령어 (getMe, sendMessage...)</td><td style="color:var(--text2);">봇에게 시킬 수 있는 것들</td></tr>
+      <tr><td>영수증 번호</td><td style="color:var(--teal);">chat_id</td><td style="color:var(--text2);">어디에(누구에게) 보낼지</td></tr>
+      <tr><td>품절 안내</td><td style="color:var(--coral);">오류 코드 (401, 400, 403...)</td><td style="color:var(--text2);">무엇이 잘못됐는지 알려주는 신호</td></tr>
+      <tr><td>음료 나옴</td><td style="color:var(--green);">{"ok":true, ...}</td><td style="color:var(--text2);">성공 응답!</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH03 흐름도 ===== -->
+<section id="flow">
+<div class="reveal">
+  <div class="section-tag">Chapter 03</div>
+  <div class="section-title">도해로 구조 파악</div>
+  <div class="section-sub">명령의 흐름과 오류 발생 시 대처 경로를 시각으로 이해해요.</div>
+</div>
+
+<!-- 전체 명령 흐름 -->
+<div class="reveal diagram-wrap">
+  <div style="text-align:center;font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:22px;">첫 메시지까지의 전체 흐름</div>
+
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:start;max-width:760px;margin:0 auto;">
+
+    <!-- 왼쪽: 3단계 명령 -->
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="background:rgba(45,212,191,.1);border:1.5px solid rgba(45,212,191,.4);border-radius:12px;padding:16px 18px;margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:500;color:var(--teal);letter-spacing:.06em;margin-bottom:5px;">1단계</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:4px;">getMe</div>
+        <div style="font-size:12px;color:var(--text2);">봇 토큰이 유효한지 확인</div>
+      </div>
+      <div style="text-align:center;color:var(--text3);font-size:13px;margin:2px 0;">↓</div>
+      <div style="background:rgba(45,212,191,.1);border:1.5px solid rgba(45,212,191,.4);border-radius:12px;padding:16px 18px;margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:500;color:var(--teal);letter-spacing:.06em;margin-bottom:5px;">2단계</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:4px;">getUpdates</div>
+        <div style="font-size:12px;color:var(--text2);">chat_id 번호 확인</div>
+      </div>
+      <div style="text-align:center;color:var(--text3);font-size:13px;margin:2px 0;">↓</div>
+      <div style="background:rgba(45,212,191,.1);border:1.5px solid rgba(45,212,191,.4);border-radius:12px;padding:16px 18px;margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:500;color:var(--teal);letter-spacing:.06em;margin-bottom:5px;">3단계</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:4px;">sendMessage</div>
+        <div style="font-size:12px;color:var(--text2);">첫 메시지 전송!</div>
+      </div>
+      <div style="text-align:center;color:var(--text3);font-size:13px;margin:2px 0;">↓</div>
+      <div style="background:rgba(74,222,128,.12);border:1.5px solid rgba(74,222,128,.4);border-radius:12px;padding:14px 18px;text-align:center;">
+        <div style="font-size:14px;font-weight:500;color:var(--green);">🎉 첫 메시지 성공!</div>
+      </div>
+    </div>
+
+    <!-- 중앙: 서버 -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 16px;margin-top:10px;">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+        <div style="width:20px;height:1px;background:rgba(139,124,248,.4);"></div>
+        <div style="font-size:10px;color:var(--text3);white-space:nowrap;">요청</div>
+        <div style="color:var(--purple);font-size:12px;">→</div>
+      </div>
+      <div style="background:rgba(139,124,248,.12);border:2px solid rgba(139,124,248,.5);border-radius:14px;padding:20px 16px;text-align:center;">
+        <div style="font-size:20px;margin-bottom:5px;">🌐</div>
+        <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:6px;">텔레그램<br>서버</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8;">요청 수신<br>처리 후 응답<br>JSON 반환</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;margin-top:4px;">
+        <div style="color:var(--teal);font-size:12px;">←</div>
+        <div style="font-size:10px;color:var(--text3);white-space:nowrap;">응답</div>
+        <div style="width:20px;height:1px;background:rgba(45,212,191,.4);"></div>
+      </div>
+      <div style="margin-top:10px;width:1.5px;height:20px;background:rgba(248,113,113,.4);"></div>
+      <div style="font-size:10px;color:var(--coral);white-space:nowrap;">오류 시</div>
+      <div style="color:var(--coral);font-size:12px;">↓</div>
+    </div>
+
+    <!-- 오른쪽: 오류 -->
+    <div style="background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:16px;">
+      <div style="font-size:11px;font-weight:500;color:var(--coral);letter-spacing:.06em;margin-bottom:12px;">오류 발생 시 대처</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:var(--bg2);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:11px;font-weight:500;color:var(--coral);font-family:'JetBrains Mono',monospace;">401</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">토큰 다시 확인</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:11px;font-weight:500;color:var(--coral);font-family:'JetBrains Mono',monospace;">400</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">파라미터 누락 확인</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:11px;font-weight:500;color:var(--coral);font-family:'JetBrains Mono',monospace;">429</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">잠깐 기다렸다 재시도</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:11px;font-weight:500;color:var(--amber);font-family:'JetBrains Mono',monospace;">[ ]</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">봇에게 /start 먼저 전송</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:11px;font-weight:500;color:var(--coral);font-family:'JetBrains Mono',monospace;">403</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">사용자 차단 해제 필요</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px;padding:12px 16px;background:var(--bg3);border-radius:9px;border:1px solid var(--border);text-align:center;font-size:12px;color:var(--text2);line-height:1.8;">
+    순서: <span style="color:var(--teal);">1단계 getMe</span> → <span style="color:var(--teal);">텔레그램에서 /start 전송</span> → <span style="color:var(--teal);">2단계 getUpdates</span> → <span style="color:var(--teal);">3단계 sendMessage</span> → 🎉<br>
+    <span style="color:var(--text3);">오류가 나면 오른쪽 코드를 읽고 해당 항목을 확인하면 돼요!</span>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH04 3가지 사례 ===== -->
+<section id="cases">
+<div class="reveal">
+  <div class="section-tag">Chapter 04</div>
+  <div class="section-title">3가지 실제 사례</div>
+  <div class="section-sub">누구든 따라할 수 있어요. 내 상황과 가장 비슷한 사례를 찾아보세요.</div>
+</div>
+
+<div class="reveal case-grid">
+  <div class="case-card">
+    <div class="case-who" style="color:var(--teal);">소상공인 — 카페 사장님</div>
+    <div class="case-title">오늘 메뉴 공지를 봇으로 자동 발송하고 싶어요</div>
+    <div class="case-desc">매일 아침 손으로 단톡방에 메뉴를 올리던 사장님. sendMessage를 써서 메뉴 문자를 자동으로 보내기 시작했습니다.</div>
+    <div class="case-cmd">1단계: /getMe → 봇 확인
+2단계: /getUpdates → chat_id 메모
+3단계: /sendMessage?chat_id=단체방ID
+         &text=오늘 메뉴: 아메리카노 3500원</div>
+    <div class="case-result"><span class="dot-ok"></span> <span style="color:var(--green);font-weight:500;">매일 아침 자동 공지 완성!</span></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-who" style="color:var(--purple);">연구생·직장인 — 대학원생</div>
+    <div class="case-title">실험 알림을 연구실 채널에 자동 전송</div>
+    <div class="case-desc">24시간 돌아가는 실험 장비 상태를 매번 확인하러 갔던 연구생. 이제 봇이 측정값이 기준을 넘으면 바로 알려줍니다.</div>
+    <div class="case-cmd">getUpdates → 채널 chat_id 추출
+sendMessage → "온도 초과 경보!"
+(Python 스크립트와 연동 가능)</div>
+    <div class="case-result"><span class="dot-ok"></span> <span style="color:var(--green);font-weight:500;">실험실 안 가도 즉시 확인!</span></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-who" style="color:var(--amber);">주부·어르신 — 아파트 부녀회장님</div>
+    <div class="case-title">공지를 봇으로 보내고 싶은데 너무 어려울까요?</div>
+    <div class="case-desc">스마트폰은 쓰지만 개발은 처음인 회장님. 브라우저 주소창에 URL 한 줄 복붙하는 것만으로 첫 메시지 성공!</div>
+    <div class="case-cmd">브라우저 주소창에 붙여넣기:
+api.telegram.org/bot토큰/sendMessage
+  ?chat_id=번호&text=안내문</div>
+    <div class="case-result"><span class="dot-ok"></span> <span style="color:var(--green);font-weight:500;">코딩 몰라도 첫 발송 성공!</span></div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH05 단계별 스테퍼 ===== -->
+<section id="practice">
+<div class="reveal">
+  <div class="section-tag">Chapter 05</div>
+  <div class="section-title">단계별 실습 — 직접 따라해봐요</div>
+  <div class="section-sub">준비부터 첫 메시지 전송까지, 클릭해서 단계별로 확인해요.</div>
+</div>
+
+<div class="reveal">
+  <div class="section-tag" style="margin-bottom:4px;">첫 명령 내리기 5단계 — 단계별로 직접 실행해봐요</div>
+  <div class="stepper" id="stepper-cmd">
+    <div class="stepper-dots" id="dots-cmd"></div>
+    <div class="stepper-body" id="body-cmd"></div>
+    <div class="stepper-nav">
+      <button class="s-btn" onclick="smove('cmd',-1)">← 이전</button>
+      <span class="s-counter" id="cnt-cmd"></span>
+      <button class="s-btn primary" id="next-cmd" onclick="smove('cmd',1)">다음 →</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH06 오류 대처 ===== -->
+<section id="errors">
+<div class="reveal">
+  <div class="section-tag">Chapter 06</div>
+  <div class="section-title">오류 났을 때 대처법</div>
+  <div class="section-sub">오류는 실패가 아니에요. 봇이 "이게 문제예요!"라고 알려주는 신호예요. 클릭해서 해법을 확인하세요.</div>
+</div>
+
+<div class="reveal" id="errorList"></div>
+
+<!-- 체크리스트 -->
+<div class="reveal" style="margin-top:36px;">
+  <div class="section-tag" style="margin-bottom:12px;">첫 명령 전 최종 체크리스트</div>
+  <div class="checklist" id="checklist"></div>
+  <div class="check-progress-wrap"><div class="check-progress-bar" id="checkBar"></div></div>
+  <div style="text-align:right;font-size:12px;color:var(--text3);margin-top:6px;" id="checkCount">0 / 7 완료</div>
+</div>
+</section>
+
+<!-- ===== CH07 퀴즈 ===== -->
+<section id="quiz">
+<div class="reveal">
+  <div class="section-tag">Chapter 07</div>
+  <div class="section-title">이해도 확인 퀴즈</div>
+  <div class="section-sub">지금까지 배운 내용을 퀴즈로 확인해봐요. 강의 시간에 틀린 문제를 질문해 주세요!</div>
+</div>
+<div class="reveal" id="quiz-wrap"></div>
+</section>
+
+<!-- 요약 테이블 -->
+<section>
+<div class="reveal">
+  <div class="section-tag">정리</div>
+  <div class="section-title">핵심 개념 한눈에 보기</div>
+</div>
+<div class="reveal" style="overflow:auto;margin-top:16px;">
+  <table class="sum-table">
+    <tr><th>명령어 / 개념</th><th>하는 일</th><th>비유</th><th>중요도</th></tr>
+    <tr><td><strong style="color:var(--teal);">getMe</strong></td><td>봇 정보 확인, 토큰 유효 검증</td><td>직원증 확인</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong style="color:var(--teal);">getUpdates</strong></td><td>수신 메시지 조회, chat_id 확인</td><td>우편함 열어보기</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong style="color:var(--teal);">sendMessage</strong></td><td>chat_id로 메시지 전송</td><td>문자 보내기</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong style="color:var(--teal);">chat_id</strong></td><td>채팅방 고유 번호</td><td>상대방 전화번호</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong style="color:var(--coral);">401 오류</strong></td><td>토큰 인증 실패</td><td>잘못된 비밀번호</td><td><span class="pill pt">주의</span></td></tr>
+    <tr><td><strong style="color:var(--coral);">400 오류</strong></td><td>필수 파라미터 누락</td><td>주소 없이 편지 보내기</td><td><span class="pill pt">주의</span></td></tr>
+    <tr><td><strong style="color:var(--amber);">[ ] 빈 배열</strong></td><td>봇에게 메시지가 없음</td><td>편지함이 비어있음</td><td><span class="pill pa">참고</span></td></tr>
+    <tr><td><strong style="color:var(--coral);">403 오류</strong></td><td>봇이 사용자에게 차단됨</td><td>문이 잠겨있음</td><td><span class="pill pa">참고</span></td></tr>
+  </table>
+</div>
+</section>
+
+<!-- ===== 다음 편 예고 ===== -->
+<section>
+<div class="reveal">
+  <div class="section-tag">다음 편 예고</div>
+  <div class="section-title">6편에서 만나요!</div>
+</div>
+<div class="reveal next-ep">
+  <span class="next-ep-badge">6편 예고</span>
+  <div class="next-ep-title">메시지 자동 응답 만들기</div>
+  <div class="next-ep-desc">5편에서 명령어를 직접 손으로 입력했다면, 6편에서는 봇이 스스로 상황을 판단해서 자동으로 응답하게 만듭니다. "안녕"이라고 쓰면 "안녕하세요!"라고 돌아오는 나만의 챗봇이 탄생합니다.</div>
+  <div class="next-ep-tags">
+    <span class="next-ep-tag">조건 분기 (if/else)</span>
+    <span class="next-ep-tag">키워드 감지</span>
+    <span class="next-ep-tag">자동 응답 구조</span>
+    <span class="next-ep-tag">봇 무한루프 실행</span>
+  </div>
+  <div style="font-size:13px;color:var(--text3);">5편까지 따라오셨다면 이미 가장 어려운 고개를 넘었습니다. 6편은 더 재미있어요!</div>
+</div>
+</section>
+
+<footer>
+  <p style="margin-bottom:6px;">오딘 스튜디오 강의자료 · OpenClaw 5편 — 첫 명령 내리기</p>
+  <p>강의 시간에 궁금한 점을 자유롭게 질문해 주세요 😊</p>
+</footer>
+
+<script>
+// 진행률
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+// 스크롤 reveal
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+// 활성 nav
+const secs=document.querySelectorAll('section[id]');
+const navAs=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});
+  navAs.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+});
+
+// ===== 스테퍼 데이터 =====
+const stepperData = {
+  cmd: [
+    {label:'준비',title:'봇 토큰 준비하기',
+     body:'BotFather에서 받은 토큰을 메모장에 복사해 두세요. 토큰은 <strong style="color:var(--teal);">숫자:영문자</strong> 형태로 생겼습니다. 절대 다른 사람에게 알려주지 마세요.',
+     mem:{cls:'s-amber',title:'토큰 예시 (실제 사용 금지)',text:'7412309812:AAFxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n⚠️ 앞뒤에 공백이나 줄바꿈 없어야 함!'}},
+    {label:'1단계 — getMe',title:'봇이 살아있나 첫 확인',
+     body:'브라우저 주소창에 아래 URL을 붙여넣고 엔터를 누르세요. 봇 이름과 username이 보이면 성공입니다! <span style="color:var(--green);">"ok":true</span>가 보이면 완료.',
+     mem:{cls:'s-green',title:'성공 응답 예시',text:'{"ok":true,"result":{\n  "id":7412309812,\n  "is_bot":true,\n  "first_name":"MyBot",\n  "username":"mybot"\n}}'}},
+    {label:'2단계 — /start 전송',title:'텔레그램 앱에서 먼저 말 걸기',
+     body:'텔레그램 앱을 열고 내 봇을 검색한 뒤 <strong style="color:var(--purple);">/start</strong>를 보내세요. 이 단계를 안 하면 chat_id를 얻을 수 없어요. 봇이 먼저 연락할 수 없기 때문이에요.',
+     mem:{cls:'s-coral',title:'⚠️ 이 단계 꼭 필요해요!',text:'텔레그램 앱에서:\n나 → 봇에게: /start\n\n이제 봇이 내 chat_id를 알게 됩니다.'}},
+    {label:'3단계 — getUpdates',title:'chat_id 번호 얻기',
+     body:'봇이 받은 메시지 목록을 가져옵니다. 결과에서 <strong style="color:var(--teal);">chat 안의 id 숫자</strong>를 찾아 메모하세요. 이게 바로 내 채팅방 번호예요.',
+     mem:{cls:'s-purple',title:'chat_id 찾는 곳',text:'{"ok":true,"result":[{\n  "message":{\n    "chat":{"id": 987654321 },  ← 이것!\n    "text":"/start"\n  }\n}]}'}},
+    {label:'4단계 — sendMessage',title:'드디어 첫 메시지 전송!',
+     body:'3단계에서 얻은 chat_id를 아래에 넣고 브라우저 주소창에 입력하면 텔레그램으로 메시지가 도착합니다. 성공하면 <span style="color:var(--green);">"ok":true</span>와 함께 message_id가 반환돼요!',
+     mem:{cls:'s-green',title:'성공! 텔레그램 앱 확인!',text:'URL: .../sendMessage\n       ?chat_id=987654321\n       &text=안녕하세요!\n\n응답: {"ok":true,"result":{"message_id":42}}'}}
+  ]
+};
+
+const stepperState = {cmd:0};
+
+function renderStepper(id) {
+  const data = stepperData[id];
+  const cur = stepperState[id];
+  const s = data[cur];
+  document.getElementById('body-'+id).innerHTML = `
+    <div class="s-label">${s.label}</div>
+    <div class="s-title">${s.title}</div>
+    <div class="s-body">${s.body}</div>
+    <div class="s-mem ${s.mem.cls}">
+      <div class="s-mem-title">${s.mem.title}</div>
+      <div class="s-mem-text">${s.mem.text}</div>
+    </div>`;
+  document.getElementById('dots-'+id).innerHTML = data.map((_,i)=>`<div class="sdot ${i===cur?'on':''}" onclick="stepperState['${id}']=${i};renderStepper('${id}')"></div>`).join('');
+  document.getElementById('cnt-'+id).textContent = `${cur+1} / ${data.length}`;
+  document.getElementById('next-'+id).textContent = cur===data.length-1 ? '처음으로 ↺' : '다음 →';
+}
+
+function smove(id, dir) {
+  const data = stepperData[id];
+  stepperState[id] = (stepperState[id] + dir + data.length) % data.length;
+  renderStepper(id);
+}
+
+renderStepper('cmd');
+
+// ===== 오류 대처 =====
+const errorData = [
+  {code:'401', title:'Unauthorized — 토큰 오류',
+   desc:'봇 토큰이 잘못되었거나 만료되었을 때',
+   msg:'{"ok":false,"error_code":401,"description":"Unauthorized"}',
+   fix:'BotFather에서 발급받은 토큰을 다시 확인하세요. 토큰에 공백이나 줄바꿈이 포함되어 있으면 안 됩니다.',
+   code2:'https://api.telegram.org/bot[여기에 토큰]/getMe'},
+  {code:'400', title:'Bad Request — 파라미터 누락',
+   desc:'sendMessage 호출 시 필수 항목이 빠졌을 때',
+   msg:'{"ok":false,"error_code":400,"description":"Bad Request: chat_id is empty"}',
+   fix:'getUpdates를 먼저 실행해서 실제 chat_id 숫자를 확인한 뒤 사용하세요.',
+   code2:'?chat_id=123456789&text=안녕하세요'},
+  {code:'429', title:'Too Many Requests — 요청 초과',
+   desc:'같은 API를 너무 빠르게 반복 호출했을 때',
+   msg:'{"ok":false,"error_code":429,"description":"Too Many Requests: retry after 30"}',
+   fix:'응답 헤더의 retry_after 초만큼 기다린 후 재시도하세요. 반복 테스트 시 최소 1초 간격을 유지하세요.',
+   code2:null},
+  {code:'[ ]', title:'빈 배열 — 메시지 없음',
+   desc:'오류는 아니지만 getUpdates 결과가 비어있을 때',
+   msg:'{"ok":true,"result":[]}',
+   fix:'텔레그램에서 봇에게 직접 메시지를 먼저 보낸 뒤 getUpdates를 다시 호출하세요. 웹훅이 설정되어 있으면 getUpdates가 작동하지 않습니다.',
+   code2:'/deleteWebhook 실행 후 재시도'},
+  {code:'403', title:'Forbidden — 봇이 차단됨',
+   desc:'사용자가 봇을 차단했거나 대화를 시작하지 않았을 때',
+   msg:'{"ok":false,"error_code":403,"description":"Forbidden: bot was blocked by the user"}',
+   fix:'해당 사용자가 봇 차단을 해제해야 합니다. 사용자가 /start 명령어를 먼저 보내도록 안내하세요.',
+   code2:null}
+];
+
+const errList = document.getElementById('errorList');
+errList.innerHTML = errorData.map((e,i)=>`
+  <div class="error-card" id="ec${i}" onclick="toggleError(${i})">
+    <div class="error-header">
+      <span class="error-code">${e.code}</span>
+      <div>
+        <div class="error-title">${e.title}</div>
+        <div style="font-size:12px;color:var(--text3);">${e.desc}</div>
+      </div>
+      <span class="error-arrow">›</span>
+    </div>
+    <div class="error-body">
+      <div class="error-msg">${e.msg}</div>
+      <div class="error-fix-label">✓ 해결 방법</div>
+      <div class="error-fix-text">${e.fix}</div>
+      ${e.code2?`<code class="error-fix-code">${e.code2}</code>`:''}
+    </div>
+  </div>`).join('');
+
+function toggleError(i) {
+  const el = document.getElementById('ec'+i);
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.error-card').forEach(c=>c.classList.remove('open'));
+  if(!wasOpen) el.classList.add('open');
+}
+
+// ===== 체크리스트 =====
+const checkItems = [
+  'BotFather에서 봇 생성하고 토큰 복사했다',
+  '토큰을 환경변수 또는 .env 파일에 저장했다',
+  'getMe 호출로 토큰이 유효한지 확인했다',
+  '텔레그램 앱에서 봇에게 /start 메시지를 보냈다',
+  'getUpdates로 chat_id를 확인했다',
+  'sendMessage로 첫 메시지 전송 성공했다',
+  '토큰을 코드에 직접 하드코딩하지 않았다'
+];
+
+const cl = document.getElementById('checklist');
+cl.innerHTML = checkItems.map((t,i)=>`
+  <div class="check-item" id="ci${i}" onclick="toggleCheck(${i})">
+    <div class="check-box">✓</div>
+    <div class="check-text">${t}</div>
+  </div>`).join('');
+
+function toggleCheck(i) {
+  document.getElementById('ci'+i).classList.toggle('checked');
+  const done = document.querySelectorAll('.check-item.checked').length;
+  const pct = Math.round(done/checkItems.length*100);
+  document.getElementById('checkBar').style.width = pct+'%';
+  document.getElementById('checkCount').textContent = done+' / '+checkItems.length+' 완료';
+  document.getElementById('checkBar').style.background = done===checkItems.length?'var(--purple)':'var(--green)';
+}
+
+// ===== 퀴즈 =====
+const quizData = [
+  {q:'봇 토큰이 맞는지 가장 먼저 확인할 때 쓰는 명령어는?',
+   opts:['sendMessage','getUpdates','getMe','setWebhook'],
+   ans:2,exp:'getMe는 봇의 기본 정보를 가져오는 명령어로, 토큰 유효성을 가장 빠르게 확인할 때 씁니다. "ok":true 가 보이면 성공!'},
+  {q:'getUpdates를 실행했는데 결과가 빈 배열 []이었습니다. 가장 먼저 해야 할 일은?',
+   opts:['봇 토큰을 새로 발급한다','텔레그램 앱에서 봇에게 /start 메시지를 먼저 보낸다','API를 다시 설치한다','잠시 기다린다'],
+   ans:1,exp:'봇이 먼저 연락할 수 없어요! 사용자가 봇에게 먼저 말을 걸어야 chat_id가 생깁니다. /start 전송이 필수예요.'},
+  {q:'API 응답에 error_code: 401이 떴습니다. 무엇이 문제일까요?',
+   opts:['인터넷이 끊겼다','봇 토큰이 잘못되었다','메시지 내용이 너무 길다','요청을 너무 많이 보냈다'],
+   ans:1,exp:'401 Unauthorized는 인증 실패입니다. BotFather에서 발급한 토큰을 다시 확인하세요. 공백이 포함됐는지도 확인!'},
+  {q:'sendMessage에서 반드시 필요한 두 가지 파라미터는?',
+   opts:['token과 text','chat_id와 text','username과 message','bot_id와 content'],
+   ans:1,exp:'어디로(chat_id) 보낼지, 무엇을(text) 보낼지가 반드시 필요합니다. 나머지는 선택 항목이에요.'},
+  {q:'봇이 사용자에게 먼저 메시지를 보낼 수 없는 이유는?',
+   opts:['봇은 유료 플랜에서만 먼저 연락할 수 있다','텔레그램 정책상 봇은 대화를 먼저 시작할 수 없다','chat_id를 알면 먼저 보낼 수 있다','getUpdates를 실행하면 가능하다'],
+   ans:1,exp:'텔레그램 정책상 봇은 스팸 방지를 위해 사용자가 먼저 말을 걸기 전에는 메시지를 보낼 수 없어요. 그래서 /start가 필수입니다!'}
+];
+
+let qIdx=0, answered=[];
+
+function renderQuiz() {
+  const wrap=document.getElementById('quiz-wrap');
+  if(qIdx>=quizData.length){
+    const ok=answered.filter(Boolean).length;
+    wrap.innerHTML=`<div class="concept-box hl" style="text-align:center;padding:36px;">
+      <div style="font-size:44px;margin-bottom:14px;">${ok>=5?'🎉':ok>=3?'👍':'📚'}</div>
+      <div style="font-size:18px;font-weight:500;margin-bottom:10px;">${ok}문제 / ${quizData.length}문제 정답!</div>
+      <div class="concept-desc" style="margin-bottom:22px;">${ok===5?'완벽해요! 6편도 바로 시작해봐요 😊':ok>=3?'잘 했어요! 틀린 문제를 중심으로 강의 때 질문해 주세요.':'괜찮아요! 다시 읽어보고 강의 때 함께 이해해요.'}</div>
+      <button class="start-btn" onclick="qIdx=0;answered=[];renderQuiz()">다시 풀기</button>
+    </div>`;
+    return;
+  }
+  const q=quizData[qIdx];
+  wrap.innerHTML=`<div class="quiz-q">
+    <div class="q-label">Q${qIdx+1} / ${quizData.length}</div>
+    <div style="font-size:15px;font-weight:500;">${q.q}</div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answer(${i})">${['①','②','③','④'][i]} ${o}</button>`).join('')}
+    </div>
+  </div>
+  <div class="quiz-fb" id="qfb"></div>
+  <div class="quiz-next" id="qnext"><button class="start-btn" onclick="qIdx++;renderQuiz()">${qIdx<quizData.length-1?'다음 문제 →':'결과 보기 →'}</button></div>`;
+}
+
+function answer(i){
+  const q=quizData[qIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  const ok=i===q.ans;
+  opts[i].classList.add(ok?'correct':'wrong');
+  if(!ok) opts[q.ans].classList.add('correct');
+  answered.push(ok);
+  const fb=document.getElementById('qfb');
+  fb.className=`quiz-fb show ${ok?'ok':'ng'}`;
+  fb.innerHTML=`${ok?'✅ 정답!':'❌ 오답!'} — ${q.exp}`;
+  document.getElementById('qnext').classList.add('show');
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

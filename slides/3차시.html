@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw 3편 — 프롬프트 작성법 · 오딘 스튜디오</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14;--bg2:#13161d;--bg3:#1a1e28;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8eaf0;--text2:#9499a8;--text3:#5a5f70;
+  --purple:#8b7cf8;--purple2:#6c5ce7;
+  --teal:#2dd4bf;--amber:#fbbf24;--coral:#f87171;--green:#4ade80;--blue:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.7;min-height:100vh;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,15,20,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.nav-logo{font-size:14px;font-weight:500;color:var(--purple);}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{padding:5px 11px;border-radius:6px;font-size:12px;color:var(--text2);text-decoration:none;transition:all .2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--bg3);color:var(--text);}
+.nav-badge{font-size:11px;background:rgba(139,124,248,.15);color:var(--purple);border:1px solid rgba(139,124,248,.3);border-radius:20px;padding:3px 10px;font-weight:500;}
+@media(max-width:600px){.nav-links{display:none;}}
+
+.progress-wrap{position:fixed;top:52px;left:0;right:0;height:2px;z-index:99;background:var(--border);}
+.progress-bar{height:100%;background:var(--purple);width:0%;transition:width .1s;}
+
+.hero{padding:130px 1.5rem 70px;text-align:center;max-width:780px;margin:0 auto;}
+.hero-tag{display:inline-block;font-size:11px;font-weight:500;color:var(--teal);border:1px solid rgba(45,212,191,.3);background:rgba(45,212,191,.08);border-radius:20px;padding:4px 14px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:22px;}
+.hero h1{font-size:clamp(26px,5vw,44px);font-weight:700;line-height:1.25;margin-bottom:18px;}
+.hero h1 span{color:var(--purple);}
+.hero p{font-size:15px;color:var(--text2);max-width:540px;margin:0 auto 32px;}
+.hero-cards{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+.hero-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;}
+.start-btn{display:inline-flex;align-items:center;gap:8px;background:var(--purple2);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;transition:all .2s;font-family:inherit;}
+.start-btn:hover{background:var(--purple);transform:translateY(-1px);}
+
+section{max-width:900px;margin:0 auto;padding:70px 1.5rem;border-bottom:1px solid var(--border);}
+.section-tag{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
+.section-title{font-size:clamp(20px,3vw,30px);font-weight:700;margin-bottom:10px;}
+.section-sub{font-size:14px;color:var(--text2);margin-bottom:36px;max-width:580px;}
+
+.concept-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;}
+.concept-box.hl{border-color:rgba(139,124,248,.4);background:rgba(139,124,248,.06);}
+.concept-box.amber{border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.05);}
+.concept-box.danger{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05);}
+.concept-emoji{font-size:26px;margin-bottom:10px;}
+.concept-title{font-size:15px;font-weight:500;margin-bottom:7px;}
+.concept-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+.analogy{margin-top:12px;padding:10px 14px;background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;font-size:12px;color:var(--text2);}
+.analogy strong{color:var(--amber);font-weight:500;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+/* 스테퍼 공통 */
+.stepper{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:8px;}
+.stepper-dots{display:flex;gap:7px;justify-content:center;padding:18px 0 0;}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--border2);transition:background .3s;cursor:pointer;}
+.sdot.on{background:var(--purple);}
+.stepper-body{padding:24px;}
+.s-label{font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.s-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:10px;}
+.s-body{font-size:13px;color:var(--text2);line-height:1.7;}
+.s-code{margin-top:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);line-height:1.6;}
+.s-mem{margin-top:12px;border-radius:8px;padding:11px 14px;}
+.s-mem-title{font-size:11px;font-weight:500;margin-bottom:5px;}
+.s-mem-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);line-height:1.6;}
+.s-green{background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.2);}
+.s-green .s-mem-title{color:var(--teal);}
+.s-purple{background:rgba(139,124,248,.08);border:1px solid rgba(139,124,248,.2);}
+.s-purple .s-mem-title{color:var(--purple);}
+.s-amber{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);}
+.s-amber .s-mem-title{color:var(--amber);}
+.s-coral{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);}
+.s-coral .s-mem-title{color:var(--coral);}
+.stepper-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px 20px;}
+.s-btn{padding:8px 20px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:13px;cursor:pointer;transition:background .2s;font-family:inherit;}
+.s-btn:hover{background:var(--bg2);}
+.s-btn.primary{background:var(--purple2);color:#fff;border-color:var(--purple2);}
+.s-btn.primary:hover{background:var(--purple);}
+.s-counter{font-size:12px;color:var(--text3);}
+
+/* 도해 공통 */
+.diagram-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px 20px;margin:24px 0;}
+
+/* 비교 카드 */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+@media(max-width:620px){.compare-grid{grid-template-columns:1fr;}}
+.compare-card{border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.compare-head{padding:10px 16px;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;display:flex;align-items:center;gap:7px;}
+.ch-bad{background:rgba(248,113,113,.12);color:var(--coral);}
+.ch-good{background:rgba(74,222,128,.1);color:var(--green);}
+.ch-dot{width:7px;height:7px;border-radius:50%;}
+.ch-dot-bad{background:var(--coral);}
+.ch-dot-good{background:var(--green);}
+.compare-body{padding:16px;font-size:13px;color:var(--text2);background:var(--bg2);line-height:1.65;font-family:'JetBrains Mono',monospace;min-height:80px;}
+.compare-body strong{color:var(--text);font-style:normal;font-family:'Noto Sans KR',sans-serif;}
+
+/* 사례 카드 */
+.case-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:18px 0;}
+@media(max-width:700px){.case-grid{grid-template-columns:1fr;}}
+.case-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s;}
+.case-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.case-head{padding:12px 16px;font-size:12px;font-weight:500;}
+.case-head-1{background:rgba(45,212,191,.1);border-bottom:1px solid rgba(45,212,191,.2);color:var(--teal);}
+.case-head-2{background:rgba(139,124,248,.1);border-bottom:1px solid rgba(139,124,248,.2);color:var(--purple);}
+.case-head-3{background:rgba(251,191,36,.08);border-bottom:1px solid rgba(251,191,36,.2);color:var(--amber);}
+.case-body{padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.7;}
+.case-prompt{margin-top:10px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);line-height:1.6;}
+
+/* 원칙 레이어 */
+.principle-layer{border-radius:10px;padding:14px 20px;margin-bottom:8px;border:1px solid transparent;}
+.principle-layer-title{font-size:14px;font-weight:500;margin-bottom:3px;}
+.principle-layer-desc{font-size:12px;opacity:.8;}
+.pl1{background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.3);} .pl1 .principle-layer-title{color:var(--teal);}
+.pl2{background:rgba(139,124,248,.1);border-color:rgba(139,124,248,.3);} .pl2 .principle-layer-title{color:var(--purple);}
+.pl3{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);} .pl3 .principle-layer-title{color:var(--amber);}
+.pl4{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);} .pl4 .principle-layer-title{color:var(--coral);}
+
+/* 퀴즈 */
+.quiz-q{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.q-label{font-size:11px;color:var(--purple);font-weight:500;letter-spacing:.06em;margin-bottom:8px;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+.quiz-opt{padding:11px 15px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;text-align:left;font-family:inherit;}
+.quiz-opt:hover{border-color:var(--purple);color:var(--purple);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(74,222,128,.1);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--coral);background:rgba(248,113,113,.1);color:var(--coral);}
+.quiz-fb{margin-top:10px;padding:11px 15px;border-radius:8px;font-size:12px;display:none;}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);}
+.quiz-fb.ng{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--coral);}
+.quiz-next{margin-top:10px;display:none;}
+.quiz-next.show{display:inline-flex;}
+
+/* 요약 테이블 */
+.sum-table{width:100%;border-collapse:collapse;font-size:13px;}
+.sum-table th{background:var(--bg3);padding:11px 14px;text-align:left;font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--text2);border-bottom:1px solid var(--border);}
+.sum-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.sum-table tr:last-child td{border-bottom:none;}
+.sum-table tr:hover td{background:var(--bg2);}
+.pill{display:inline-block;font-size:11px;font-weight:500;border-radius:20px;padding:2px 8px;}
+.pp{background:rgba(139,124,248,.15);color:var(--purple);}
+.pt{background:rgba(45,212,191,.15);color:var(--teal);}
+.pa{background:rgba(251,191,36,.15);color:var(--amber);}
+
+/* 예고 박스 */
+.preview-box{border-left:3px solid var(--purple);background:rgba(139,124,248,.06);border-radius:0 12px 12px 0;padding:18px 22px;margin-top:28px;}
+.preview-title{font-size:12px;font-weight:500;color:var(--purple);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.preview-body{font-size:13px;color:var(--text2);line-height:1.7;}
+
+footer{text-align:center;padding:50px 1.5rem;color:var(--text3);font-size:13px;}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* 태그 뱃지 */
+.tag-badge{display:inline-block;font-size:11px;font-weight:500;border-radius:20px;padding:3px 10px;margin-right:5px;margin-bottom:5px;}
+.tb-teal{background:rgba(45,212,191,.12);color:var(--teal);border:1px solid rgba(45,212,191,.25);}
+.tb-purple{background:rgba(139,124,248,.12);color:var(--purple);border:1px solid rgba(139,124,248,.25);}
+.tb-amber{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.25);}
+.tb-coral{background:rgba(248,113,113,.1);color:var(--coral);border:1px solid rgba(248,113,113,.25);}
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+
+<nav>
+  <div class="nav-logo">🦀 OpenClaw 강의자료</div>
+  <div class="nav-links">
+    <a href="#summary">한 줄 요약</a>
+    <a href="#analogy">비유 이해</a>
+    <a href="#diagram">구조 도해</a>
+    <a href="#cases">사례</a>
+    <a href="#stepper">단계별 실습</a>
+    <a href="#quiz">퀴즈</a>
+  </div>
+  <div class="nav-badge">3편 · 오딘 스튜디오</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">3편 — 프롬프트 작성법</div>
+  <h1>AI에게 정확하게<br><span>일 시키는 법</span></h1>
+  <p>잘 시키는 것과 못 시키는 것의 차이. 소상공인·연구생·주부·어르신 누구나 바로 쓸 수 있는 프롬프트 작성 원칙을 배워봐요.</p>
+  <div class="hero-cards">
+    <div class="hero-card">⏱ 예상 학습 시간 20분</div>
+    <div class="hero-card">📱 모바일 최적화</div>
+    <div class="hero-card">🧩 단계별 인터랙티브</div>
+    <div class="hero-card">🔰 초보자 눈높이</div>
+  </div>
+  <a href="#summary" class="start-btn">학습 시작하기 →</a>
+</div>
+
+<!-- ===== CH01 한 줄 요약 ===== -->
+<section id="summary">
+<div class="reveal">
+  <div class="section-tag">Chapter 01</div>
+  <div class="section-title">오늘 배울 것 — 한 줄 요약</div>
+  <div class="section-sub">복잡한 기술 없이, 이 한 줄만 기억하면 돼요.</div>
+</div>
+
+<div class="reveal" style="background:rgba(139,124,248,.08);border:2px solid rgba(139,124,248,.4);border-radius:14px;padding:28px 32px;text-align:center;margin-bottom:28px;">
+  <div style="font-size:clamp(16px,2.5vw,22px);font-weight:700;line-height:1.5;color:var(--text);">
+    AI에게 <span style="color:var(--teal);">무엇을</span> · <span style="color:var(--amber);">누구에게</span> · <span style="color:var(--purple);">어떤 형식으로</span> 전달하면
+  </div>
+  <div style="font-size:clamp(16px,2.5vw,22px);font-weight:700;color:var(--text);margin-top:6px;">원하는 결과를 바로 얻을 수 있다.</div>
+  <div style="margin-top:18px;font-size:13px;color:var(--text3);">이 세 가지 중 하나라도 빠지면 AI가 빈칸을 알아서 채웁니다. 그 빈칸이 내 기대와 다를 때 "AI가 이상하게 답한다"는 느낌이 들어요.</div>
+</div>
+
+<div class="reveal grid-2" style="gap:14px;">
+  <div class="concept-box danger">
+    <div class="concept-emoji">😓</div>
+    <div class="concept-title" style="color:var(--coral);">이렇게 시키면 안 돼요</div>
+    <div class="concept-desc">막연하고 짧은 지시 → AI가 "가장 평범한" 답을 내놓아요.<br><br>
+    예: <span style="color:var(--text);font-family:'JetBrains Mono',monospace;">"이메일 써줘"</span><br>
+    예: <span style="color:var(--text);font-family:'JetBrains Mono',monospace;">"잘 써줘"</span><br>
+    예: <span style="color:var(--text);font-family:'JetBrains Mono',monospace;">"마케팅 전략 알려줘"</span>
+    </div>
+  </div>
+  <div class="concept-box" style="border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.05);">
+    <div class="concept-emoji">😊</div>
+    <div class="concept-title" style="color:var(--green);">이렇게 시키면 잘 돼요</div>
+    <div class="concept-desc">구체적인 정보 4가지 → AI가 딱 맞는 결과물을 만들어요.<br><br>
+    맥락 + 역할 + 형식 + 범위<br><br>
+    이 네 가지가 프롬프트의 재료예요.
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH02 비유 ===== -->
+<section id="analogy">
+<div class="reveal">
+  <div class="section-tag">Chapter 02</div>
+  <div class="section-title">비유로 개념 이해하기</div>
+  <div class="section-sub">초등학생도 이해하는 비유로 먼저 감을 잡아봐요.</div>
+</div>
+
+<div class="reveal concept-box amber">
+  <div class="concept-emoji">🍽️</div>
+  <div class="concept-title">식당에서 주문하는 것과 똑같아요</div>
+  <div class="concept-desc" style="margin-top:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div style="padding:12px 16px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;">
+        <div style="font-size:12px;color:var(--coral);font-weight:500;margin-bottom:5px;">❌ 못 시키는 주문</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);">"밥 줘요"</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px;">→ 뭘 갖다 줄지 모르는 상황</div>
+      </div>
+      <div style="padding:12px 16px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:8px;">
+        <div style="font-size:12px;color:var(--green);font-weight:500;margin-bottom:5px;">✅ 잘 시키는 주문</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);">"된장찌개 하나,<br>뜨겁게, 국물 많이,<br>밥 따로 주세요"</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px;">→ 정확히 원하는 대로!</div>
+      </div>
+    </div>
+    AI도 마찬가지예요. <span style="color:var(--amber);font-weight:500;">구체적으로 말할수록 원하는 결과가 나옵니다.</span> 막연하게 시키면 AI가 "보통"으로 대답해요.
+  </div>
+  <div class="analogy"><strong>핵심:</strong> AI는 독심술사가 아니에요. 머릿속에 있는 것을 꺼내서 입력창에 넣어야 해요.</div>
+</div>
+
+<div class="reveal" style="margin-top:24px;">
+  <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:14px;letter-spacing:.04em;">잘 시키는 것 vs 못 시키는 것 — 실제 비교</div>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-head ch-bad"><span class="ch-dot ch-dot-bad"></span>못 시키는 방법</div>
+      <div class="compare-body">"이메일 써줘"</div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-head ch-good"><span class="ch-dot ch-dot-good"></span>잘 시키는 방법</div>
+      <div class="compare-body">"신규 고객에게 보낼 환영 이메일을 써줘. 우리 서비스는 SaaS 회계 툴이고, 고객은 중소기업 대표야. 친근한 톤으로 3문단 이내."</div>
+    </div>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-head ch-bad"><span class="ch-dot ch-dot-bad"></span>못 시키는 방법</div>
+      <div class="compare-body">"이 코드 고쳐줘"</div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-head ch-good"><span class="ch-dot ch-dot-good"></span>잘 시키는 방법</div>
+      <div class="compare-body">"시니어 백엔드 개발자처럼 이 코드를 리뷰해줘. 성능 문제와 보안 취약점을 중심으로, 항목별 불릿으로 정리해줘."</div>
+    </div>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-head ch-bad"><span class="ch-dot ch-dot-bad"></span>못 시키는 방법</div>
+      <div class="compare-body">"마케팅 전략 알려줘"</div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-head ch-good"><span class="ch-dot ch-dot-good"></span>잘 시키는 방법</div>
+      <div class="compare-body">"SNS 마케팅 전략 3가지만 알려줘. 각 항목은 제목, 실행 방법, 예상 효과 순으로. 인스타그램 중심으로, 예산 100만원 이하."</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH03 도해 ===== -->
+<section id="diagram">
+<div class="reveal">
+  <div class="section-tag">Chapter 03</div>
+  <div class="section-title">도해로 구조 파악하기</div>
+  <div class="section-sub">좋은 프롬프트의 4가지 재료 — 한눈에 보기</div>
+</div>
+
+<!-- 4재료 흐름 도해 -->
+<div class="reveal diagram-wrap">
+  <div style="text-align:center;font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;">좋은 프롬프트 = 4가지 재료</div>
+
+  <!-- 4재료 레이어 -->
+  <div style="max-width:720px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+
+      <div style="background:rgba(45,212,191,.1);border:1.5px solid rgba(45,212,191,.4);border-radius:11px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:500;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">재료 1 — 맥락</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;">누가 · 왜 · 어떤 상황</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;">맥락이 없으면 AI는 가장 평범한 방향으로 해석해요.<br>"우리 카페", "단골 고객 대상"처럼 상황을 알려주세요.</div>
+        <div style="margin-top:10px;background:var(--bg3);border-radius:7px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);">"홍대 떡볶이 포장마차,<br>신메뉴 출시 상황"</div>
+      </div>
+
+      <div style="background:rgba(139,124,248,.1);border:1.5px solid rgba(139,124,248,.4);border-radius:11px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:500;color:var(--purple);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">재료 2 — 역할</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;">전문가처럼 · 선생님처럼</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;">역할을 주면 AI가 그 분야의 언어와 우선순위로 답해요.<br>"변호사처럼", "초등학생에게 설명하듯"처럼요.</div>
+        <div style="margin-top:10px;background:var(--bg3);border-radius:7px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);">"시니어 마케터처럼<br>리뷰해줘"</div>
+      </div>
+
+      <div style="background:rgba(251,191,36,.08);border:1.5px solid rgba(251,191,36,.4);border-radius:11px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:500;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">재료 3 — 형식</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;">표 · 불릿 · 3줄 요약</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;">원하는 출력 형태를 말하면 불필요한 수정 왕복이 없어져요.<br>표, 번호 목록, 문단, 3줄 요약 등을 미리 정하세요.</div>
+        <div style="margin-top:10px;background:var(--bg3);border-radius:7px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);">"불릿 3개,<br>각 항목 1줄씩"</div>
+      </div>
+
+      <div style="background:rgba(248,113,113,.08);border:1.5px solid rgba(248,113,113,.4);border-radius:11px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:500;color:var(--coral);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">재료 4 — 범위</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;">이것만 · 이건 빼고</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;">빼고 싶은 것을 말하는 게 더 효과적이에요.<br>"가격 언급 제외", "UX 흐름만"처럼 경계를 그어주세요.</div>
+        <div style="margin-top:10px;background:var(--bg3);border-radius:7px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--coral);">"전문용어 빼고,<br>이 부분만 봐줘"</div>
+      </div>
+    </div>
+
+    <!-- 화살표 -->
+    <div style="text-align:center;color:var(--text3);font-size:18px;margin:4px 0;">↓</div>
+
+    <!-- 완성된 프롬프트 -->
+    <div style="background:rgba(139,124,248,.12);border:2px solid rgba(139,124,248,.5);border-radius:12px;padding:18px 22px;text-align:center;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:6px;">완성된 프롬프트</div>
+      <div style="font-size:12px;color:var(--text2);">AI가 바로 이해하는 지시문</div>
+    </div>
+
+    <div style="text-align:center;color:var(--text3);font-size:18px;margin:4px 0;">↓</div>
+
+    <!-- 결과 -->
+    <div style="background:rgba(74,222,128,.08);border:1.5px solid rgba(74,222,128,.3);border-radius:12px;padding:14px 22px;text-align:center;">
+      <div style="font-size:13px;font-weight:500;color:var(--green);">원하는 결과물 출력</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:3px;">처음 시도부터 바로 쓸 수 있는 결과</div>
+    </div>
+
+    <div style="margin-top:18px;padding:12px 16px;background:var(--bg3);border-radius:9px;border:1px solid var(--border);text-align:center;font-size:12px;color:var(--text2);line-height:1.8;">
+      재료 4개 = <span style="color:var(--teal);">맥락</span> + <span style="color:var(--purple);">역할</span> + <span style="color:var(--amber);">형식</span> + <span style="color:var(--coral);">범위</span><br>
+      <span style="color:var(--text3);">하나라도 빠지면 AI가 알아서 채워요 — 내 기대와 다르게!</span>
+    </div>
+  </div>
+</div>
+
+<!-- 잘 못 시키는 차이 도해 -->
+<div class="reveal" style="margin-top:28px;">
+  <div class="section-tag" style="margin-bottom:14px;">프롬프트 품질의 차이 — 바깥에서 안으로</div>
+  <div class="diagram-wrap" style="padding:20px;">
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px;text-align:center;">정보가 많아질수록 결과 품질이 올라가요</div>
+    <div class="principle-layer pl1"><div class="principle-layer-title">🟢 최상 — 맥락 + 역할 + 형식 + 범위 + 예시</div><div class="principle-layer-desc">AI가 마치 오랜 동료처럼 정확히 이해하고 즉시 쓸 수 있는 결과물을 만들어요</div></div>
+    <div style="text-align:center;color:var(--text3);font-size:13px;margin:2px 0;">↓ 조금 빠짐</div>
+    <div class="principle-layer pl2"><div class="principle-layer-title">🔵 좋음 — 맥락 + 형식 + 범위</div><div class="principle-layer-desc">한두 번 수정하면 원하는 결과가 나와요</div></div>
+    <div style="text-align:center;color:var(--text3);font-size:13px;margin:2px 0;">↓ 더 빠짐</div>
+    <div class="principle-layer pl3"><div class="principle-layer-title">🟡 보통 — 맥락만 있음</div><div class="principle-layer-desc">방향은 맞지만 형식이나 범위 조정이 필요해요</div></div>
+    <div style="text-align:center;color:var(--text3);font-size:13px;margin:2px 0;">↓ 거의 없음</div>
+    <div class="principle-layer pl4"><div class="principle-layer-title">🔴 최하 — 한 단어, 동사 하나</div><div class="principle-layer-desc">AI가 빈칸을 마음대로 채워요. 내 기대와 다른 결과가 나올 확률이 매우 높아요</div></div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH04 사례 ===== -->
+<section id="cases">
+<div class="reveal">
+  <div class="section-tag">Chapter 04</div>
+  <div class="section-title">3가지 실제 사례</div>
+  <div class="section-sub">소상공인 · 연구생·직장인 · 주부·어르신 — 각자의 상황에 맞는 프롬프트 예시예요.</div>
+</div>
+
+<div class="reveal case-grid">
+  <div class="case-card">
+    <div class="case-head case-head-1">🏪 소상공인 — 떡볶이 가게 사장님</div>
+    <div class="case-body">
+      인스타그램 홍보글을 써야 하는데 뭘 말해야 할지 모를 때.<br><br>
+      <div style="font-size:11px;color:var(--teal);font-weight:500;margin-bottom:5px;">✅ 이렇게 쓰세요</div>
+      <div class="case-prompt">"우리 가게(홍대 떡볶이 골목, 2평 포장마차) 신메뉴 치즈떡볶이 홍보 인스타 글 써줘. 20~30대 직장인 대상, 이모지 포함, 3줄 이내."</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text3);">맥락(홍대 포장마차) + 대상(20~30대) + 형식(3줄, 이모지) = 완성!</div>
+    </div>
+  </div>
+  <div class="case-card">
+    <div class="case-head case-head-2">🎓 연구생·직장인 — 논문 다듬기</div>
+    <div class="case-body">
+      논문 초록을 학술지에 투고할 수 있게 다듬어야 할 때.<br><br>
+      <div style="font-size:11px;color:var(--purple);font-weight:500;margin-bottom:5px;">✅ 이렇게 쓰세요</div>
+      <div class="case-prompt">"아래 논문 초록을 학술지 투고용으로 다듬어줘. 영어 원어민 수준, 250단어 이내, 수동태 줄이고 명확한 기여점 강조."</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text3);">역할(원어민) + 범위(수동태, 기여점) + 형식(250단어) = 완성!</div>
+    </div>
+  </div>
+  <div class="case-card">
+    <div class="case-head case-head-3">🏠 주부·어르신 — 저녁 메뉴 고르기</div>
+    <div class="case-body">
+      냉장고에 있는 재료로 오늘 저녁을 뚝딱 만들고 싶을 때.<br><br>
+      <div style="font-size:11px;color:var(--amber);font-weight:500;margin-bottom:5px;">✅ 이렇게 쓰세요</div>
+      <div class="case-prompt">"냉장고에 달걀, 두부, 파, 간장이 있어. 20분 안에 만들 수 있는 저녁 반찬 2가지만 알려줘. 레시피는 단계별로 짧게."</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text3);">맥락(재료) + 범위(20분, 2가지) + 형식(단계별) = 완성!</div>
+    </div>
+  </div>
+</div>
+
+<div class="reveal" style="margin-top:18px;">
+  <div class="concept-box hl">
+    <div class="concept-title">📌 세 사례의 공통점</div>
+    <div class="concept-desc" style="margin-top:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+        <div style="padding:10px 14px;background:var(--bg3);border-radius:8px;">
+          <div style="font-size:11px;color:var(--coral);font-weight:500;margin-bottom:4px;">공통된 실수</div>
+          <div style="font-size:12px;color:var(--text2);">"이메일 써줘" "레시피 알려줘" 처럼 동사 하나만 씀</div>
+        </div>
+        <div style="padding:10px 14px;background:var(--bg3);border-radius:8px;">
+          <div style="font-size:11px;color:var(--green);font-weight:500;margin-bottom:4px;">공통된 성공 패턴</div>
+          <div style="font-size:12px;color:var(--text2);">상황 + 대상 + 제한 조건 + 원하는 형태를 함께 씀</div>
+        </div>
+      </div>
+    </div>
+    <div class="analogy"><strong>기억하세요:</strong> 길게 쓰는 게 중요한 게 아니라, 맥락·역할·형식·범위 중 어떤 게 빠졌는지 확인하는 게 중요해요.</div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH05 스테퍼 ===== -->
+<section id="stepper">
+<div class="reveal">
+  <div class="section-tag">Chapter 05</div>
+  <div class="section-title">단계별 프롬프트 작성 실습</div>
+  <div class="section-sub">빈 입력창 앞에서 막막할 때, 이 순서대로 따라가면 돼요.</div>
+</div>
+
+<div class="reveal">
+  <div class="section-tag" style="margin-bottom:4px;">5단계 작성법 — 순서대로 클릭해서 확인해요</div>
+  <div class="stepper" id="stepper-prompt">
+    <div class="stepper-dots" id="dots-prompt"></div>
+    <div class="stepper-body" id="body-prompt"></div>
+    <div class="stepper-nav">
+      <button class="s-btn" onclick="smove('prompt',-1)">← 이전</button>
+      <span class="s-counter" id="cnt-prompt"></span>
+      <button class="s-btn primary" id="next-prompt" onclick="smove('prompt',1)">다음 →</button>
+    </div>
+  </div>
+</div>
+
+<div class="reveal" style="margin-top:28px;">
+  <div class="section-tag" style="margin-bottom:4px;">결과가 마음에 안 들 때 — 수정하는 방법</div>
+  <div class="stepper" id="stepper-fix">
+    <div class="stepper-dots" id="dots-fix"></div>
+    <div class="stepper-body" id="body-fix"></div>
+    <div class="stepper-nav">
+      <button class="s-btn" onclick="smove('fix',-1)">← 이전</button>
+      <span class="s-counter" id="cnt-fix"></span>
+      <button class="s-btn primary" id="next-fix" onclick="smove('fix',1)">다음 →</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== CH06 퀴즈 ===== -->
+<section id="quiz">
+<div class="reveal">
+  <div class="section-tag">Chapter 06</div>
+  <div class="section-title">이해도 확인 퀴즈</div>
+  <div class="section-sub">지금까지 배운 내용을 퀴즈로 확인해봐요. 강의 시간에 틀린 문제를 질문해 주세요!</div>
+</div>
+<div class="reveal" id="quiz-wrap"></div>
+</section>
+
+<!-- 요약 -->
+<section>
+<div class="reveal">
+  <div class="section-tag">정리</div>
+  <div class="section-title">핵심 개념 한눈에 보기</div>
+</div>
+<div class="reveal" style="overflow:auto;margin-top:16px;">
+  <table class="sum-table">
+    <tr><th>원칙</th><th>한 줄 정의</th><th>비유</th><th>중요도</th></tr>
+    <tr><td><strong>맥락</strong></td><td>누가, 왜, 어떤 상황인지 알려주기</td><td>식당에서 상황 설명하기</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong>역할</strong></td><td>AI에게 어떤 전문가 역할을 줄지</td><td>직원에게 담당 업무 주기</td><td><span class="pill pt">중요</span></td></tr>
+    <tr><td><strong>형식</strong></td><td>표, 불릿, 몇 줄인지 미리 지정</td><td>보고서 양식 주기</td><td><span class="pill pp">핵심</span></td></tr>
+    <tr><td><strong>범위</strong></td><td>포함할 것·빼야 할 것 명시</td><td>주문할 때 "빼주세요" 말하기</td><td><span class="pill pt">중요</span></td></tr>
+    <tr><td><strong>예시 제공</strong></td><td>원하는 톤·스타일을 예시로 보여주기</td><td>참고할 샘플 주기</td><td><span class="pill pt">중요</span></td></tr>
+    <tr><td><strong>수정 요청</strong></td><td>"더 짧게", "톤 바꿔줘"로 이어가기</td><td>편집 과정으로 대화하기</td><td><span class="pill pa">참고</span></td></tr>
+    <tr><td><strong>프롬프트는 초안</strong></td><td>처음부터 완벽할 필요 없다</td><td>첫 보고서가 완성본이 아닌 것처럼</td><td><span class="pill pa">참고</span></td></tr>
+  </table>
+</div>
+
+<div class="reveal preview-box">
+  <div class="preview-title">4편 예고 — 다음 시간에 배울 것</div>
+  <div class="preview-body">
+    <strong style="color:var(--text);">Claude와 대화 이어가기</strong><br><br>
+    한 번에 다 시키지 않아도 됩니다. 결과를 보고 "더 짧게", "톤 바꿔줘", "예시 추가해줘"처럼 대화를 이어가는 방법 — AI와의 대화는 검색이 아니라 편집 과정에 가깝습니다.<br><br>
+    <span style="color:var(--text3);">다음 편에서는 멀티턴 대화, 컨텍스트 유지, 실전 대화 패턴을 배워요.</span>
+  </div>
+</div>
+</section>
+
+<footer>
+  <p style="margin-bottom:6px;">오딘 스튜디오 강의자료 · OpenClaw 3편 — 프롬프트 작성법</p>
+  <p>강의 시간에 궁금한 점을 자유롭게 질문해 주세요 😊</p>
+</footer>
+
+<script>
+// 진행률
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+// 스크롤 reveal
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+// 활성 nav
+const secs=document.querySelectorAll('section[id]');
+const navAs=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});
+  navAs.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+});
+
+// ===== 스테퍼 데이터 =====
+const stepperData = {
+  prompt: [
+    {label:'1단계 — 목적 정하기',title:'무엇을 만들고 싶은지 딱 한 줄로 써요',
+     body:'입력창 앞에서 막막할 때 가장 먼저 할 일은 목적을 동사로 끝내는 것이에요. "이메일 쓰기", "요약하기", "번역하기"처럼요. 아직 맥락이나 형식은 몰라도 돼요. 목적부터 쓰세요.',
+     mem:{cls:'s-amber',title:'예시: 목적 한 줄',text:'목적: 신제품 소개 이메일 쓰기\n\n(아직 아무것도 몰라도 괜찮아요)'}},
+    {label:'2단계 — 읽을 사람 알리기',title:'누가 읽을지 알려주면 어휘와 톤이 달라져요',
+     body:'AI는 독자를 모릅니다. 누가 읽을지 알려주면 어휘, 톤, 길이가 완전히 달라져요. "60대 부모님께", "20대 직장인에게", "중소기업 대표에게"처럼 간단하게 써도 충분해요.',
+     mem:{cls:'s-purple',title:'예시: 독자 명시',text:'읽는 사람: 60대 부모님께 보내는 이메일\n\n→ 쉬운 단어, 큰 글씨 느낌, 따뜻한 톤'}},
+    {label:'3단계 — 형식 지정하기',title:'표, 불릿, 3줄 요약 — 어떤 형태로 받을지 말하세요',
+     body:'원하는 출력 형태를 미리 말해두면 불필요한 수정 왕복이 사라져요. "불릿 3개", "표로 정리", "500자 이내", "단계별 번호"처럼 구체적으로 지정하면 됩니다.',
+     mem:{cls:'s-green',title:'예시: 형식 지정',text:'형식: 불릿 3개, 각 항목 1줄씩\n\n→ AI가 딱 그 형태로 출력해줘요'}},
+    {label:'4단계 — 빼고 싶은 것 말하기',title:'제외할 것을 말하는 게 더 효과적일 때가 많아요',
+     body:'원하지 않는 것을 말하는 게 더 효과적일 때가 많아요. "전문용어 빼고", "가격 언급 제외", "영어 단어 쓰지 말고"처럼 명시적으로 경계를 그어주세요.',
+     mem:{cls:'s-coral',title:'예시: 범위 한정',text:'빼줘: 영어 단어, 전문 용어\n이 부분만: UX 흐름\n\n→ 제약이 구체성을 만들어요'}},
+    {label:'5단계 — 예시 하나 보여주기',title:'말로 설명하기 어려운 톤·스타일은 예시 하나가 최고예요',
+     body:'"캐치하게", "자연스럽게", "전문적으로"는 사람마다 다르게 해석돼요. 원하는 결과의 예시 하나가 긴 설명보다 훨씬 정확하게 전달됩니다. "이런 느낌으로:"라고 붙이면 돼요.',
+     mem:{cls:'s-amber',title:'예시: 톤 예시 제공',text:'"이런 톤으로: \'오늘 점심 뭐 드셨어요?\n저는 국밥이요!\'\n\n→ 캐주얼하고 친근한 구어체"'}}
+  ],
+  fix: [
+    {label:'수정 패턴 1',title:'"다시 써줘" 대신 이유를 말해요',
+     body:'"다시 써줘"라고만 하면 AI는 뭘 바꿔야 하는지 모르고 비슷하게 다시 써요. 마음에 안 드는 이유를 구체적으로 말해주면 다음 결과가 훨씬 좋아져요.',
+     mem:{cls:'s-coral',title:'비교',text:'❌ "다시 써줘"\n\n✅ "너무 딱딱해, 더 구어체로 줄여서 다시 써줘"'}},
+    {label:'수정 패턴 2',title:'한 번에 하나씩만 바꿔요',
+     body:'한꺼번에 여러 가지를 바꾸면 어떤 변화가 효과적이었는지 알 수 없어요. "톤만 바꿔줘", "길이만 줄여줘"처럼 한 번에 하나씩 수정하면 원하는 방향을 빠르게 찾을 수 있어요.',
+     mem:{cls:'s-purple',title:'예시: 한 번에 하나씩',text:'1차: "더 짧게 줄여줘 (3줄로)"\n2차: "톤을 더 캐주얼하게"\n3차: "마지막 문장에 CTA 추가해줘"'}},
+    {label:'수정 패턴 3',title:'잘 된 부분은 지키고 나머지만 고쳐요',
+     body:'"첫 문단은 완벽해, 두 번째 문단만 더 구체적으로 써줘"처럼 잘 된 부분을 먼저 말해주면 AI가 그 방향을 유지하면서 나머지를 고쳐요.',
+     mem:{cls:'s-green',title:'예시: 부분 수정',text:'"1번 항목은 완벽해.\n2번과 3번만 더 구체적인 예시를 넣어줘."'}},
+    {label:'수정 패턴 4',title:'마음에 드는 다른 예시를 보여줘요',
+     body:'설명하기 어려울 땐 "이것처럼 해줘"가 가장 빠릅니다. 원하는 결과와 비슷한 예시를 복사해서 붙여넣고 "이 느낌으로"라고 하면 돼요.',
+     mem:{cls:'s-amber',title:'예시: 참고 예시 활용',text:'"이 글처럼 해줘:\n\'오늘 새벽 3시에 깨달았어요.\n이 방법 하나로 3개월을 아꼈다는 걸.\'\n→ 이 톤으로 우리 제품 소개 글 써줘"'}},
+    {label:'수정 패턴 5',title:'새 대화가 아니라 같은 대화를 이어가요',
+     body:'결과가 마음에 안 든다고 새 대화를 시작하면 AI가 앞 내용을 모두 잊어요. 같은 대화 창에서 계속 수정하면 문맥이 유지되어 점점 더 좋아져요.',
+     mem:{cls:'s-purple',title:'대화 이어가기 패턴',text:'처음: 초안 받기\n수정 1: 길이 조정\n수정 2: 톤 조정\n수정 3: 세부사항 추가\n→ 한 대화 안에서 완성!'}}
+  ]
+};
+
+const stepperState = {prompt:0, fix:0};
+
+function renderStepper(id) {
+  const data = stepperData[id];
+  const cur = stepperState[id];
+  const s = data[cur];
+  document.getElementById('body-'+id).innerHTML = `
+    <div class="s-label">${s.label}</div>
+    <div class="s-title">${s.title}</div>
+    <div class="s-body">${s.body}</div>
+    <div class="s-mem ${s.mem.cls}">
+      <div class="s-mem-title">${s.mem.title}</div>
+      <div class="s-mem-text">${s.mem.text}</div>
+    </div>`;
+  document.getElementById('dots-'+id).innerHTML = data.map((_,i)=>`<div class="sdot ${i===cur?'on':''}" onclick="stepperState['${id}']=${i};renderStepper('${id}')"></div>`).join('');
+  document.getElementById('cnt-'+id).textContent = `${cur+1} / ${data.length}`;
+  document.getElementById('next-'+id).textContent = cur===data.length-1 ? '처음으로 ↺' : '다음 →';
+}
+
+function smove(id, dir) {
+  const data = stepperData[id];
+  stepperState[id] = (stepperState[id] + dir + data.length) % data.length;
+  renderStepper(id);
+}
+
+renderStepper('prompt');
+renderStepper('fix');
+
+// ===== 퀴즈 =====
+const quizData = [
+  {q:'아래 프롬프트 중 가장 잘 작성된 것은?',
+   opts:['이메일 써줘','다시 써줘','우리 카페 신메뉴 오픈 안내 이메일을 단골 고객 대상으로 써줘. 친근한 톤, 3문단 이내.','이메일을 길고 자세하게 써줘'],
+   ans:2,exp:'정답! 대상(단골 고객), 목적(신메뉴 오픈), 형식(3문단 이내), 톤(친근한)이 모두 포함되어 있어요. 맥락+형식+범위 세 가지가 다 들어 있는 것이 핵심입니다.'},
+  {q:'AI에게 역할을 부여하면 어떤 효과가 있나요?',
+   opts:['AI가 더 길게 대답해준다','AI가 그 분야의 언어와 우선순위로 답한다','AI가 이미지를 생성해준다','AI가 더 빠르게 응답한다'],
+   ans:1,exp:'역할을 주면 AI가 해당 전문가의 관점으로 응답해요. "시니어 백엔드 개발자처럼"이라고 하면 성능과 보안을 중심으로, "초등 선생님처럼"이라고 하면 쉬운 단어로 설명합니다.'},
+  {q:'결과가 마음에 안 들 때 가장 좋은 방법은?',
+   opts:['새 대화를 열고 처음부터 다시 한다','그냥 "다시 써줘"라고 한다','마음에 안 드는 이유를 구체적으로 말하고 같은 대화를 이어간다','더 길게 써달라고 한다'],
+   ans:2,exp:'같은 대화에서 "너무 딱딱해, 더 구어체로 줄여줘"처럼 이유를 말하면 AI가 맥락을 유지하면서 수정해줘요. 새 대화를 열면 앞 내용을 모두 잊어버립니다.'},
+  {q:'프롬프트에서 "범위 한정"이란 무엇인가요?',
+   opts:['입력 글자 수를 줄이는 것','포함할 것과 제외할 것을 명시하는 것','AI의 응답 속도를 높이는 설정','대화 창을 작게 조절하는 것'],
+   ans:1,exp:'"전문용어 빼고", "UX 흐름만 봐줘", "가격 언급 제외"처럼 포함할 것과 빼야 할 것을 명시하는 것이에요. 제약이 구체성을 만들어요!'},
+  {q:'말로 설명하기 어려운 톤·스타일을 전달하는 가장 효과적인 방법은?',
+   opts:['"캐치하게 써줘"라고 형용사로 설명한다','원하는 결과와 비슷한 예시를 하나 보여준다','더 자세하게 길게 설명한다','여러 형용사를 나열한다'],
+   ans:1,exp:'예시 하나가 긴 설명보다 훨씬 정확해요. "이런 톤으로: \'오늘 점심 뭐 드셨어요?\'"처럼 실제 예시를 보여주면 AI가 그 느낌을 바로 캐치합니다.'}
+];
+
+let qIdx=0, answered=[];
+
+function renderQuiz() {
+  const wrap=document.getElementById('quiz-wrap');
+  if(qIdx>=quizData.length){
+    const ok=answered.filter(Boolean).length;
+    wrap.innerHTML=`<div class="concept-box hl" style="text-align:center;padding:36px;">
+      <div style="font-size:44px;margin-bottom:14px;">${ok>=4?'🎉':ok>=3?'👍':'📚'}</div>
+      <div style="font-size:18px;font-weight:500;margin-bottom:10px;">${ok}문제 / ${quizData.length}문제 정답!</div>
+      <div class="concept-desc" style="margin-bottom:22px;">${ok===5?'완벽해요! 강의 시간에 심화 질문을 준비해 오세요 😊':ok>=3?'잘 했어요! 틀린 문제를 중심으로 강의 때 질문해 주세요.':'괜찮아요! 다시 읽어보고 강의 때 함께 이해해요.'}</div>
+      <button class="start-btn" onclick="qIdx=0;answered=[];renderQuiz()">다시 풀기</button>
+    </div>`;
+    return;
+  }
+  const q=quizData[qIdx];
+  wrap.innerHTML=`<div class="quiz-q">
+    <div class="q-label">Q${qIdx+1} / ${quizData.length}</div>
+    <div style="font-size:15px;font-weight:500;">${q.q}</div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answer(${i})">${['①','②','③','④'][i]} ${o}</button>`).join('')}
+    </div>
+  </div>
+  <div class="quiz-fb" id="qfb"></div>
+  <div class="quiz-next" id="qnext"><button class="start-btn" onclick="qIdx++;renderQuiz()">${qIdx<quizData.length-1?'다음 문제 →':'결과 보기 →'}</button></div>`;
+}
+
+function answer(i){
+  const q=quizData[qIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  const ok=i===q.ans;
+  opts[i].classList.add(ok?'correct':'wrong');
+  if(!ok) opts[q.ans].classList.add('correct');
+  answered.push(ok);
+  const fb=document.getElementById('qfb');
+  fb.className=`quiz-fb show ${ok?'ok':'ng'}`;
+  fb.innerHTML=`${ok?'✅ 정답!':'❌ 오답!'} — ${q.exp}`;
+  document.getElementById('qnext').classList.add('show');
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
